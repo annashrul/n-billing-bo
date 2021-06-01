@@ -13,6 +13,11 @@ export interface iUser {
     username: string,
 }
 
+export interface iSelect {
+    value: string,
+    label: string,
+}
+
 
 export interface iTenant{
   address:string,

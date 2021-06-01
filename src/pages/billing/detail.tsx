@@ -44,7 +44,7 @@ const TenantValidation = yup.object().shape({
 
 
 
-const FormBilling: React.FC = (datum:any) => {
+const DetailBilling: React.FC = (datum:any) => {
     const history = useRouter();
     const [isChange,setIsChange]= useState(false);
 
@@ -256,4 +256,4 @@ export async function getServerSideProps(ctx: NextPageContext) {
         props:{datum,edit}
     }
 }
-export default FormBilling;
+export default DetailBilling;

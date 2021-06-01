@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
-
 import Helper from 'lib/helper';
-import { Pagination } from '@windmill/react-ui'
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import { } from '@windmill/react-ui'
@@ -72,7 +70,7 @@ const IndexTenant: React.FC = (datum:any) => {
                     </div>
                     </div>
                     <TableTenant
-                        data={data}
+                        data={data===undefined?[]:data}
                         onDelete={async (id) => await handleDelete(Api.apiClient + 'management/tenant/' + id, () => handleGets())}
                     />
                     <br />

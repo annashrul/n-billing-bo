@@ -70,7 +70,7 @@ const IndexBilling: React.FC = (datum:any) => {
                        
                     </div>
                     <div className="flex items-center ">
-                        <button className="rounded text-white bg-yellow-400 font-sans font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/tenant/form',query: { keyword: 'add' },},'tenant/add')}>Add Tenant</button>
+                        <button className="rounded text-white bg-yellow-400 font-sans font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/billing/form',query: { keyword: 'add' }},'billing/add')}>Add Billing</button>
                     </div>
                     </div>
                     <TableBilling
