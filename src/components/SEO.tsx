@@ -9,8 +9,8 @@ const SEO: React.FC<SEOProps> = ({ description, keywords, title }) => (
     <meta property="og:type" content="website" />
     <meta name="og:title" property="og:title" content={title} />
     <meta name="og:description" property="og:description" content={description} />
-    <meta property="og:site_name" content="Prowara" />
-    <meta property="og:url" content="https://prowara.com" />
+    <meta property="og:site_name" content="Netindo" />
+    <meta property="og:url" content="http://ptnetindo.com/" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -47,10 +47,14 @@ export interface SEOProps {
 }
 
 SEO.defaultProps = {
-  description: 'ProWara (Program Waralaba Rakyat) adalah konsep yang bertujuan untuk membantu serta membangkitkan Ekonomi Kerakyatan di pasca Pandemi.',
+  description: 'Netindo is a company that was founded in 2015 as one of the companies engaged in information technology in Indonesia.',
   keywords: [
-    'prowara',
-    'Program Waralaba Rakyat'
+    'netindo',
+    'pos',
+    'point of sales',
+    'pos bandung',
+    'pos jawa barat',
+    'pos bagus',
   ],
 };
 

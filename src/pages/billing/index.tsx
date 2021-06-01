@@ -3,7 +3,6 @@ import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 
 import Helper from 'lib/helper';
-import { Pagination } from '@windmill/react-ui'
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import { } from '@windmill/react-ui'
@@ -26,7 +25,7 @@ const IndexBilling: React.FC = (datum:any) => {
     const [numPagin, setNumPagin] = useState(1);
 
     const handleGets = async () => {
-        let url: string = `management/billing?page=${numPagin}&perpage=1`
+        let url: string = `management/billing?page=${numPagin}`
         if (search !== '') url += `&q=${search}`;
         await handleGet(Api.apiClient + url, (data:any) => {
             setData(data.data);
@@ -45,7 +44,7 @@ const IndexBilling: React.FC = (datum:any) => {
          }
     }, [search, numPagin])
     
-
+    console.log(datum.datum.total_amount)
     return (
         <Layout title="Billing">
             <div className="container grid  lg:px-6 mx-auto">
@@ -70,18 +69,19 @@ const IndexBilling: React.FC = (datum:any) => {
                        
                     </div>
                     <div className="flex items-center ">
-                        <button className="rounded text-white bg-yellow-400 font-sans font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/billing/form',query: { keyword: 'add' }},'billing/add')}>Add Billing</button>
+                        <button className="rounded text-white bg-yellow-400 font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/billing/form',query: { keyword: 'add' }},'billing/add')}>Add Billing</button>
                     </div>
                     </div>
                     <TableBilling
                         data={data===undefined?[]:data}
-                        onDelete={async (id) => await handleDelete(Api.apiClient + 'management/tenant/' + id, () => handleGets())}
+                        onDelete={async (id) => await handleDelete(Api.apiClient + 'management/billing/' + id, () => handleGets())}
+                        totalAmount={datum.datum.total_amount}
                     />
                     <br />
                     <PaginationQ
                         count={ pagin?.per_page}
                         page={numPagin}
-                        totalPage={pagin?.total}
+                        totalPage={Math.ceil((pagin===undefined?0:pagin.total)/(pagin===undefined?0:pagin.per_page))}
                         onNext={()=>setNumPagin(numPagin + 1)}
                         onPrev={()=>setNumPagin(numPagin - 1)}
                         handlGotoPage={(pageN) => setNumPagin(pageN)}
@@ -100,7 +100,7 @@ export async function getServerSideProps(ctx:NextPageContext) {
     }
     let datum: any = [];
     try {
-      const getData = await Api.get(Api.apiUrl +`management/billing?page=1&perpage=1`);
+      const getData = await Api.get(Api.apiUrl +`management/billing?page=1`);
         if(getData.status===200){
             datum = getData.data.result;
         }else{

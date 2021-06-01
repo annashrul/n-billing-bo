@@ -3,16 +3,14 @@ import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 
 import Helper from 'lib/helper';
-import { Pagination } from '@windmill/react-ui'
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import { } from '@windmill/react-ui'
 import nookies from 'nookies'
 import {useRouter} from 'next/router'
 import { handleDelete, handleGet } from "lib/handleAction";
-import { iPagin, iService, iTenant } from "lib/interface";
+import { iPagin, iService} from "lib/interface";
 import TableService from "components/service/table";
-import { Menu } from 'antd';
 
 import 'antd/dist/antd.css';
 import PaginationQ from "helpers/pagination";
@@ -30,7 +28,7 @@ const IndexService: React.FC = () => {
     const [category, setCategory] = useState('0');
 
     const handleGets = async () => {
-        let url: string = `management/service?page=${numPagin}&type=${category}&perpage=1`
+        let url: string = `management/service?page=${numPagin}&type=${category}`
         if (search !== '') url += `&q=${search}`;
         await handleGet(Api.apiClient + url, (data: any) => {
             setData(data.data !== undefined ? data.data : []);
@@ -60,14 +58,14 @@ const IndexService: React.FC = () => {
 					<div style={{borderBottom:category==="0"?"1px solid white":"none"}} onClick = {() => {
 						setCategory("0")
 					}}>	
-						<h1 className="font-sans text-white text-center">
+						<h1 className=" text-white text-center">
 							Tenant
 						</h1>
 					</div>
 					<div className="ml-8" style={{borderBottom:category==="1"?"1px solid white":"none"}} onClick = {() => {
 						setCategory("1")
 					}}>
-						<h1 className="font-sans text-white text-center">
+						<h1 className=" text-white text-center">
 							Billing
 						</h1>
 					</div>
@@ -85,7 +83,7 @@ const IndexService: React.FC = () => {
                             }}/>
                     </div>
                     <div className="flex items-center ">
-                        <button className="rounded text-white bg-yellow-400 font-sans font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/service/form', query: { type:category}},'service/add')}>Add Service</button>
+                        <button className="rounded text-white bg-yellow-400  font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/service/form', query: { type:category}},'service/add')}>Add Service</button>
                     </div>
                     </div>
                     <TableService
@@ -96,7 +94,7 @@ const IndexService: React.FC = () => {
                     <PaginationQ
                         count={ pagin?.per_page}
                         page={numPagin}
-                        totalPage={pagin?.total}
+                        totalPage={Math.ceil((pagin===undefined?0:pagin.total)/(pagin===undefined?0:pagin.per_page))}
                         onNext={()=>setNumPagin(numPagin + 1)}
                         onPrev={()=>setNumPagin(numPagin - 1)}
                         handlGotoPage={(pageN) => setNumPagin(pageN)}

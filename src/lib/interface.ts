@@ -22,6 +22,8 @@ export interface iSelect {
 export interface iTenant{
   address:string,
   storage_used:string,
+  usage_db:string,
+  billing_active:string,
   api:string,
   backoffice:string,
   created_at:string,

@@ -1,11 +1,10 @@
 import { iTenant } from "lib/interface";
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import {useRouter} from 'next/router'
 import { MdEdit,MdDoneAll,MdClose,MdDelete } from 'react-icons/md';
 import 'antd/dist/antd.css';
 import { Drawer, Button} from 'antd';
-import { handleDelete } from "lib/handleAction";
-import Api from 'lib/httpService';
+
 
 type Props<iTenant> = {
     data: Array<iTenant>;
@@ -15,35 +14,34 @@ type Props<iTenant> = {
 const tempDetail = (title:string, desc:any) => {
     return (
          <tr>
-            <th className="py-2 font-sans font-normal">{title}</th>
-            <th className="py-2 font-sans font-normal">:</th>
-            <th className="py-2 font-sans font-normal">{desc}</th>
+            <th className="py-2 font-normal" style={{width:"30%"}}>{title}</th>
+            <th className="py-2 font-normal ">:</th>
+            <th className="py-2 font-normal">{desc}</th>
         </tr>
     );
 }
 
-const TableTenant = <T extends {}>(props: Props<iTenant>) => {
+const TableTenant = (props: Props<iTenant>) => {
     const [visible,setVisible]= useState<boolean>(false);
     const [idx,setIdx]= useState<number>(0);
     const router = useRouter()
-    
-    // const deleted = async (id: string) => {
-    //     await handleDelete(Api.apiClient + 'management/tenant/' + id);
-    //     // const history = useRouter();
-    //     history.push('/tenant');
-    // }
+   
     return (
         <div className="w-full overflow-x-auto">
             <table className="w-full relative text-left border-gray-boder whitespace-no-wrap">
                 <thead className="w-full border-b border-gray-boder">
                     <tr>
-                        <th className="py-3 px-6 text-white font-sans font-normal">Tenant</th>
-                        <th className="py-3 px-6 text-white font-sans font-normal">Service</th>
-                        <th className="py-3 px-6 text-white font-sans font-normal">Monthly billing</th>
-                         <th className="py-3 px-6 text-white font-sans font-normal">Phone number</th>
-                        <th className="py-3 px-6 text-white font-sans font-normal">Email</th>
-                        <th className="py-3 px-6 text-white font-sans font-normal">Responsible</th>
-                        <th className="py-3 px-6 text-white font-sans font-normal">#</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} rowSpan={2} className="py-3 px-6 text-white font-normal">Tenant</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} rowSpan={2} className="py-3 px-6 text-white font-normal">Service</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} rowSpan={2} className="py-3 px-6 text-white font-normal">Server name</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} rowSpan={2} className="py-3 px-6 text-white font-normal">Monthly billing</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} rowSpan={2} className="py-3 px-6 text-white font-normal">Billing active</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} colSpan={2} className="py-3 px-6 text-white font-normal text-center">Storage</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} rowSpan={2} className="py-3 px-6 text-white font-normal text-center">#</th>
+                    </tr>
+                    <tr>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} className="py-3 px-6 text-white font-normal">Folder</th>
+                        <th style={{border:"1px solid rgba(26, 28, 35, 1)"}} className="py-3 px-6 text-white font-normal">Database</th>
                     </tr>
             </thead>
                 <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
@@ -51,17 +49,18 @@ const TableTenant = <T extends {}>(props: Props<iTenant>) => {
                         props.data.length>0&&props.data.map((val, key) => {
                             return (
                                 <tr key={key}>
-                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-sans font-normal">{val.title}</td>
-                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-sans font-normal">{val.service}</td>
-                                    <td onClick={() => { setIdx(key); setVisible(true) }} className="cursor-pointer py-3 px-6 whitespace-nowrap font-sans font-normal">{val.monthly_billing === 0 ? (
+                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-normal">{val.title}</td>
+                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-normal">{val.service}</td>
+                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-normal">{val.server_name}</td>
+                                    <td onClick={() => { setIdx(key); setVisible(true) }} className="cursor-pointer py-3 px-6 whitespace-nowrap font-normal">{val.monthly_billing === 0 ? (
                                         <MdClose size={24} className="cursor-pointer" color={'#9E9E9E'}/>
                                     ) : (
                                         <MdDoneAll size={24} className="cursor-pointer" color={'#9E9E9E'}/>
                                     )}</td>
-                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-sans font-normal">{val.telp}</td>
-                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-sans font-normal">{val.email}</td>
-                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-sans font-normal">{val.responsible}</td>
-                                    <td className="py-3 px-6 whitespace-nowrap font-sans font-normal flex flex-row">
+                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-normal">{val.billing_active}</td>
+                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-normal">{val.storage_used}</td>
+                                    <td onClick={()=>{setIdx(key);setVisible(true)} } className="cursor-pointer py-3 px-6 whitespace-nowrap font-normal">{val.usage_db}</td>
+                                    <td className="py-3 px-6 whitespace-nowrap font-normal flex flex-row">
                                         <MdEdit size={24} className="cursor-pointer" color={'#9E9E9E'} onClick={() => {
                                             router.push({ pathname: '/tenant/form', query: { keyword: val.id }, },'tenant/edit')
                                         }} />
@@ -79,7 +78,7 @@ const TableTenant = <T extends {}>(props: Props<iTenant>) => {
             {
 
              props.data.length>0&&<Drawer
-                title={`Detail Tenant ${props.data[idx].title}`}
+                title={props.data[idx].title}
                 // title={`Detail Tenant`}
                 width={720}
                 placement={'right'}
@@ -96,23 +95,37 @@ const TableTenant = <T extends {}>(props: Props<iTenant>) => {
               </Button>
             </div>
           }
-            >
-            <table className="w-full relative text-left border-gray-boder whitespace-no-wrap">
-                <thead className="w-full border-b border-gray-boder">
-                    {tempDetail('Service', props.data[idx].title)}
-                    {tempDetail('Storage', props.data[idx].storage_used)}
+                >
+            <h1 className="text-lg font-bold">Contact detail</h1>
+            <table className="w-full relative text-left whitespace-no-wrap">
+                <thead className="w-full ">
+                    {tempDetail('responsible', props.data[idx].responsible)}
+                    {tempDetail('Phone number', props.data[idx].telp)}
+                    {tempDetail('Email', props.data[idx].email)}
+                    {tempDetail('Address', props.data[idx].address)}
+                </thead>
+                <thead className="w-full "><tr><th colSpan={3}><hr/></th></tr></thead>
+                <h1 className="w-full text-lg font-bold">Service detail</h1>
+                <thead className="w-full">
+                    {tempDetail('Service', props.data[idx].service)}
+                    {tempDetail('Server name', props.data[idx].server_name)}
+                    {tempDetail('Databases', props.data[idx].databases)}
                     {tempDetail('Monthly billing',props.data[idx].monthly_billing===0?(<MdClose size={24} className="cursor-pointer" color={'#9E9E9E'}/>):( <MdDoneAll size={24} className="cursor-pointer" color={'#9E9E9E'}/>))}
-                    {tempDetail('Phone number',props.data[idx].telp)}
-                    {tempDetail('Email',props.data[idx].email)}
-                    {tempDetail('Responsible',props.data[idx].responsible)}
+                    {tempDetail('Billing active', props.data[idx].billing_active)}
                     {tempDetail('Api',props.data[idx].api)}
                     {tempDetail('Back office',props.data[idx].backoffice)}
-                    {tempDetail('Front end',props.data[idx].frontend)}
-                    {tempDetail('Server name',props.data[idx].server_name)}
-                    {tempDetail('Address',props.data[idx].address)}
-                </thead>
-                    </table>
-                    <div dangerouslySetInnerHTML={{ __html: props.data[idx].note.replace(/\n/g, '<br/>')}}></div>
+                    {tempDetail('Front end', props.data[idx].frontend)}
+                        </thead>
+                       <thead className="w-full "><tr><th colSpan={3}><hr/></th></tr></thead>
+                        <h1 className="w-full text-lg font-bold">Usage detail</h1>
+                <thead className="w-full">
+                    {tempDetail('Folder', props.data[idx].storage_used)}
+                    {tempDetail('Database', props.data[idx].usage_db)}
+                        </thead>
+                        <thead className="w-full "><tr><th colSpan={3}><hr/></th></tr></thead>
+            </table>
+            <h1 className="text-lg font-bold">Note</h1>
+            <div dangerouslySetInnerHTML={{ __html: props.data[idx].note.replace(/\n/g, '<br/>')}}></div>
         </Drawer>
             }
        

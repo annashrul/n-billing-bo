@@ -9,7 +9,7 @@ import nookies from 'nookies'
 import TableTenant from "components/tenant/table";
 import {useRouter} from 'next/router'
 import { handleDelete, handleGet } from "lib/handleAction";
-import { iPagin, iService, iTenant } from "lib/interface";
+import { iPagin, iTenant } from "lib/interface";
 import PaginationQ from "helpers/pagination";
 
 
@@ -24,7 +24,7 @@ const IndexTenant: React.FC = (datum:any) => {
     const [numPagin, setNumPagin] = useState(1);
 
     const handleGets = async () => {
-        let url: string = `management/tenant?page=${numPagin}&perpage=1`
+        let url: string = `management/tenant?page=${numPagin}`
         if (search !== '') url += `&q=${search}`;
         await handleGet(Api.apiClient + url, (data:any) => {
             setData(data.data);
@@ -43,7 +43,7 @@ const IndexTenant: React.FC = (datum:any) => {
          }
     }, [search,numPagin])
     return (
-        <Layout title="Riwayat Deposit">
+        <Layout title="Tenant">
             <div className="container grid  lg:px-6 mx-auto">
                 <div className="flex justify-between">
                     <div>
@@ -66,7 +66,7 @@ const IndexTenant: React.FC = (datum:any) => {
                        
                     </div>
                     <div className="flex items-center ">
-                        <button className="rounded text-white bg-yellow-400 font-sans font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/tenant/form',query: { keyword: 'add' },},'tenant/add')}>Add Tenant</button>
+                        <button className="rounded text-white bg-yellow-400 font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/tenant/form',query: { keyword: 'add' },},'tenant/add')}>Add Tenant</button>
                     </div>
                     </div>
                     <TableTenant
@@ -77,7 +77,7 @@ const IndexTenant: React.FC = (datum:any) => {
                     <PaginationQ
                        count={ pagin?.per_page}
                         page={numPagin}
-                        totalPage={pagin?.total}
+                        totalPage={Math.ceil((pagin===undefined?0:pagin.total)/(pagin===undefined?0:pagin.per_page))}
                         onNext={()=>setNumPagin(numPagin + 1)}
                         onPrev={()=>setNumPagin(numPagin - 1)}
                         handlGotoPage={(pageN) => setNumPagin(pageN)}
@@ -96,7 +96,7 @@ export async function getServerSideProps(ctx:NextPageContext) {
     }
     let datum: any = [];
     try {
-      const getData = await Api.get(Api.apiUrl +`management/tenant?page=1&perpage=1`);
+      const getData = await Api.get(Api.apiUrl +`management/tenant?page=1`);
         if(getData.status===200){
             datum = getData.data.result;
         }else{

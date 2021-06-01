@@ -4,6 +4,7 @@ import { MdChevronLeft} from 'react-icons/md'
 type Props = {
   title: string;
   link?: boolean;
+  isIcon?: boolean;
   onClick?: () => void;
 }
 
@@ -16,11 +17,14 @@ const SubHeader: React.FC<Props> = (props) => {
                   props.link && 
                   <a
                     
-                    className="cursor-pointer flex flex-row items-center font-sans font-semibold text-gray-700 dark:text-gray-200"
+                    className="cursor-pointer flex flex-row items-center font-semibold text-gray-700 dark:text-gray-200"
                     onClick={props.onClick}
                   >
-                    <MdChevronLeft size={24} />
-                    <span>{props.title}</span>
+                {
+                  props.isIcon||props.isIcon===undefined&&<MdChevronLeft size={24} />
+                }    
+                
+                    <span className={`${!props.isIcon&&'ml-2'}`}>{props.title}</span>
                   </a>
                 }
               </li>

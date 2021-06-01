@@ -38,7 +38,7 @@ axios.defaults.headers.common['password'] = `$2b$08$hLMU6rEvNILCMaQbthARK.iCmDRO
 axios.defaults.headers.common['myconnection'] = `billing`;
 axios.defaults.headers.common['Content-Type'] = `application/x-www-form-urlencoded`;
 //Binding events. 
-Router.events.on('routeChangeStart', () => NProgress.start()); Router.events.on('routeChangeComplete', () => { NProgress.done();}); Router.events.on('routeChangeError', () => NProgress.done());
+Router.events.on('routeChangeStart', () => NProgress.start()); Router.events.on('routeChangeComplete', () => NProgress.done()); Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return <Windmill dark>

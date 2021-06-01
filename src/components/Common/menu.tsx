@@ -19,7 +19,7 @@ const Widget: React.FC<iWidget> = ({ title, link, icon, isActive }) => {
     return (
         <li className="relative px-6 py-3">
             {isActive&&<span className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg" aria-hidden="true" />}
-            <Link href={link} scroll={false}>
+            <Link href={link}>
                 <a className={gaya} target={target}>
                     {icon}
                     <span className="ml-4 ">{title}</span>

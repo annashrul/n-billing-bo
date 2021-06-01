@@ -6,18 +6,14 @@ import {useRouter} from 'next/router'
 import SubHeader from "helpers/subHeader";
  import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Radio} from 'antd';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import 'antd/dist/antd.css';
 import { handlePost, handlePut } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
-import { iService } from "lib/interface";
 import nookies from 'nookies'
 import helper from "lib/helper";
-import Select from 'react-select';
-import CKEditor from "react-ckeditor-component";
-import { ActionMeta, GroupTypeBase, InputActionMeta, OptionTypeBase, ValueType } from './types';
+import { btnSave } from "helpers/general";
 
 type InitialForm = {
     title: string;
@@ -31,14 +27,20 @@ const TenantValidation = yup.object().shape({
 
 
 
-const FormService: React.FC = (datum:any) => {
+const FormService: React.FC = () => {
     const history = useRouter();
+  
     const { register, handleSubmit, errors, setValue, control, trigger, unregister, clearErrors, formState, getValues, reset, setError, watch } = useForm<InitialForm>({
 		resolver: yupResolver(TenantValidation),
 		shouldUnregister: true,
 		criteriaMode: "all",
-		mode: "all"
+        mode: 'all',
+        // mode: "onBlur",
+        // reValidateMode: "onBlur",
+        // shouldUnregister: true
     });
+   
+
      useEffect(() => {
          setValue('type', history.query.type === '0' ? 'tenant' : 'billing');
          if (history.query.id !== undefined) {
@@ -65,6 +67,8 @@ const FormService: React.FC = (datum:any) => {
         
     }
 
+   
+    console.log('formstate',formState)
    
     return (
         <Layout title={`Form ${history.query.id===undefined?'Add':'Edit'} Service` }>
@@ -98,28 +102,28 @@ const FormService: React.FC = (datum:any) => {
                 }}
                 >
                 <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="flex flex-col lgap-5 pb-2">
-                        <div className="flex flex-row w-full">
-                            <label className="font-sans font-medium text-gray-200 w-1/4">
+                    <div className="flex flex-col lgap-5 pb-2">
+                        <div className="flex flex-row w-full mb-9">
+                            <label className="font-medium text-gray-200 w-1/4">
                                 Type  <span className="text-red-600">*</span>
                             </label>
-                            <div className="flex flex-col w-3/4 mt-2">
-                                <input readOnly={true} name="type" ref={register} type="text" className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-nonee dark:text-gray-300 form-input"/>
+                            <div className="flex flex-col w-3/4">
+                                <input  readOnly={true} name="type" ref={register} type="text" className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-nonee dark:text-gray-300 form-input"/>
                             </div>
                         </div>
-                        <div className="flex flex-row w-full">
-                            <label className="font-sans font-medium text-gray-200 w-1/4">
+                        <div className="flex flex-row w-full mb-9">
+                            <label className="font-medium text-gray-200 w-1/4">
                                 Title  <span className="text-red-600">*</span>
                             </label>
-                            <div className="flex flex-col w-3/4 mt-2">
-                                <input name="title" onChange={(e) => { setValue('title', e.target.value) }} ref={register} type="text" className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-nonee dark:text-gray-300 form-input"/>
+                            <div className="flex flex-col w-3/4">
+                                    <input name="title" onChange={(e) => { setValue('title', e.target.value) }} ref={register} type="text" className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-nonee dark:text-gray-300 form-input"/>
                                 <span className="text-red-700">{errors.title?.message}</span>
                             </div>
                         </div>
                     </div>
                     <div className="flex justify-end w-full" style={{ marginTop: 16 }}>
                         <div className="flex flex-row">
-                            <button className="rounded text-white bg-yellow-400 font-sans font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5">Save</button>
+                           {btnSave((!formState.isDirty || !formState.isValid),``)}
                         </div>
                     </div>
                 </form>

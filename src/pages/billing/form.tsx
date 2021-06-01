@@ -6,17 +6,16 @@ import {useRouter} from 'next/router'
 import SubHeader from "helpers/subHeader";
  import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import 'antd/dist/antd.css';
-import { handlePost, handlePut } from "lib/handleAction";
+import { handleGet, handlePost } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import nookies from 'nookies'
 import helper from "lib/helper";
-import { btnSave} from "helpers/general";
+import { btnSave, rmDot, toCurrency} from "helpers/general";
 import Select from 'react-select';
 import { iSelect, iService, iTenant } from "lib/interface";
-import { parse } from "node:url";
 
 type InitialForm = {
     id_tenant: string;
@@ -36,9 +35,7 @@ const TenantValidation = yup.object().shape({
         .required('A period is required')
         ,
 	due_date: yup.string().required('due date is required'),
-	amount: yup.number().typeError("Amount is required")
-        .positive("A period can't start with a minus")
-        .integer("A period can't include a decimal point")
+	amount: yup.string().required("Amount is required")
         .min(1)
 })
 
@@ -46,7 +43,6 @@ const TenantValidation = yup.object().shape({
 
 const FormBilling: React.FC = (props: any) => {
     const history = useRouter();
-    const [isChange,setIsChange]= useState(false);
     const [idTenant,setIdTenant]= useState('');
     const [dataTenant, setDataTenant] = useState([]);
     const [idService, setIdService] = useState('');
@@ -57,9 +53,13 @@ const FormBilling: React.FC = (props: any) => {
 		criteriaMode: "all",
 		mode: "all"
     });
+
+   
     useEffect(() => {
+       
         let tenant: any = [];
         let service: any = [];
+
         if (props.tenant.data.length > 0) {
             props.tenant.data.map((val:iTenant, key:number) => {
                 tenant.push({value:val.id,label:val.title})
@@ -86,10 +86,9 @@ const FormBilling: React.FC = (props: any) => {
             id_tenant: idTenant,
             period:data.period,
             due_date:data.due_date,
-            amount:data.amount,
+            amount:rmDot(data.amount),
             service:idService
         };
-        console.log(parseData)
         await handlePost(url, parseData, (datum,msg) => {
             helper.mySwalWithCallback(msg, () => history.back())
         });
@@ -135,8 +134,8 @@ const FormBilling: React.FC = (props: any) => {
                 >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col lgap-5 pb-2">
-                        <div className="flex flex-row w-full mb-4">
-                            <label className="font-sans font-medium text-gray-200 w-1/4">
+                        <div className="flex flex-row w-full mb-9">
+                            <label className="font-medium text-gray-200 w-1/4">
                                 Tenant  <span className="text-red-600">*</span>
                             </label>
                             <div className="flex flex-col w-3/4">
@@ -152,8 +151,8 @@ const FormBilling: React.FC = (props: any) => {
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-row w-full mb-4">
-                            <label className="font-sans font-medium text-gray-200 w-1/4">
+                        <div className="flex flex-row w-full mb-9">
+                            <label className="font-medium text-gray-200 w-1/4">
                                 Due Date  <span className="text-red-600">*</span>
                             </label>
                             <div className="flex flex-col w-3/4">
@@ -161,8 +160,8 @@ const FormBilling: React.FC = (props: any) => {
                                 <span className="text-red-700">{errors.due_date?.message}</span>
                             </div>
                         </div>
-                        <div className="flex flex-row w-full mb-4">
-                            <label className="font-sans font-medium text-gray-200 w-1/4">
+                        <div className="flex flex-row w-full mb-9">
+                            <label className="font-medium text-gray-200 w-1/4">
                                 Periode ( month ) <span className="text-red-600">*</span>
                             </label>
                             <div className="flex flex-col w-3/4">
@@ -175,17 +174,17 @@ const FormBilling: React.FC = (props: any) => {
                                 <span className="text-red-700">{errors.period?.message}</span>
                             </div>
                         </div>
-                        <div className="flex flex-row w-full mb-4">
-                            <label className="font-sans font-medium text-gray-200 w-1/4">
+                        <div className="flex flex-row w-full mb-9">
+                            <label className="font-medium text-gray-200 w-1/4">
                                 Amount <span className="text-red-600">*</span>
                             </label>
                             <div className="flex flex-col w-3/4">
-                                <input name="amount" onChange={(e) => {setValue('amount', e.target.value)  }} ref={register} type="number" className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-nonee dark:text-gray-300 form-input" />
+                                <input name="amount" onChange={(e) => {setValue('amount', toCurrency(e.target.value))  }} ref={register} type="text" className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-nonee dark:text-gray-300 form-input" />
                                 <span className="text-red-700">{errors.amount?.message}</span>
                             </div>
                         </div>
-                                <div className="flex flex-row w-full mb-4">
-                            <label className="font-sans font-medium text-gray-200 w-1/4">
+                        <div className="flex flex-row w-full mb-9">
+                            <label className="font-medium text-gray-200 w-1/4">
                                 Service  <span className="text-red-600">*</span>
                             </label>
                             <div className="flex flex-col w-3/4">
@@ -201,7 +200,7 @@ const FormBilling: React.FC = (props: any) => {
                                 />
                             </div>
                         </div>
-                        </div>
+                    </div>
                     <div className="flex justify-end w-full" style={{ marginTop: 16}}>
                             <div className="flex flex-row">
                                {btnSave((!formState.isDirty || !formState.isValid),``)}
@@ -239,7 +238,9 @@ export async function getServerSideProps(ctx: NextPageContext) {
         }else{
             service=[];
         }
-    } catch (err) {}
+    } catch (err) { }
+    // console.log('tenant', tenant)
+    // console.log('service', service)
     return { 
         props:{tenant,service}
     }
