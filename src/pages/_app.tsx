@@ -8,22 +8,21 @@ import 'nprogress/nprogress.css'; //styles of nprogress
 import { Windmill } from '@windmill/react-ui'
 import { ToastProvider } from 'react-toast-notifications';
 import axios from 'axios';
-import LogRocket from 'logrocket';
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import {doLogout} from 'lib/auth'
-import { encode, decode } from 'js-base64';
+import { encode,decode} from 'js-base64';
 
 
 
 // LogRocket.init('9razfl/nbilling');
 const coo: string = Cookies.get('_nbilling')!;
-console.log(coo);
+
 if(coo!==undefined) {
-  axios.defaults.headers.common["Authorization"] = atob(coo);
+  axios.defaults.headers.common["Authorization"] = decode(coo);
   // cek JWT Token
   // console.log(atob(coo));
-  const decodedToken:any = jwt_decode(atob(coo));
+  const decodedToken:any = jwt_decode(decode(coo));
   const dateNow = new Date();
   if (decodedToken.exp * 1000 < dateNow.getTime()) {
     doLogout();
@@ -32,6 +31,7 @@ if(coo!==undefined) {
   }
 
 }
+
 
 axios.defaults.headers.common['username'] = encode(`billing`);
 axios.defaults.headers.common['password'] = `$2b$08$hLMU6rEvNILCMaQbthARK.iCmDRO7jNbUB8CcvyRStqsHD4UQxjDO`;

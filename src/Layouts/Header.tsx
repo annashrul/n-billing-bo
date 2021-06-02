@@ -2,8 +2,6 @@ import React from 'react';
 import {doLogout} from 'lib/auth'
 import {useRouter} from 'next/router'
 import Link from 'next/link'
-import {iUser} from 'lib/interface'
-import Cookies from "js-cookie";
 import { useEffect } from 'react';
 
 
@@ -21,8 +19,8 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar,openProfile,toggleProfile}
   useEffect(() => {
     // const coo: string=Cookies.get('__uid')!;
     // const datum:iUser= JSON.parse(atob(coo));
-    // setNama(datum.fullname)
-    // setFoto(datum.foto)
+    setNama('-')
+    setFoto('')
 
 	}, []);
   const actLogout=()=>{

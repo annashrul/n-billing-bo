@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from "react";
+import React, {useEffect} from "react";
 import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import { } from '@windmill/react-ui'
@@ -55,12 +55,15 @@ const FormService: React.FC = () => {
             type:history.query.type
         };
         if (history.query.id === undefined) {
-            await handlePost(url, parseData, (datum,msg) => {
+            await handlePost(url, parseData, (datum, msg) => {
+                console.log(datum);
                 helper.mySwalWithCallback(msg, () => history.back())
             });
         }
         else {
-            await handlePut(url + '/' + history.query.id,parseData, (datum,msg) => {
+            await handlePut(url + '/' + history.query.id, parseData, (datum, msg) => {
+                                console.log(datum);
+
                 helper.mySwalWithCallback(msg, () => history.back())
             })
         }

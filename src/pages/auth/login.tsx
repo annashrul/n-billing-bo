@@ -19,7 +19,7 @@ const Login: NextPage<iLogin> = () => {
   const router = useRouter()
 
   const [loading, setLoading] = React.useState(false)
-  const {register, handleSubmit, errors,setValue} = useForm<FormValues>();
+  const {register, handleSubmit, errors} = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = data => {
     setLoading(true);
     Sess.http.post(Sess.http.apiClient+'auth/management', {

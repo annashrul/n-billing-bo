@@ -64,7 +64,8 @@ const DetailBilling: React.FC = () => {
             amount:data.amount==='-'?'':rmDot(data.amount),
             service:!isChange?'':history.query.id_service
         };
-        await handlePost(url, parseData, (datum,msg) => {
+        await handlePost(url, parseData, (datum, msg) => {
+            console.log(datum);
             helper.mySwalWithCallback(msg, () => history.back())
         });
     }

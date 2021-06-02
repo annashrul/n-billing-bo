@@ -16,8 +16,8 @@ import { iService } from "lib/interface";
 import nookies from 'nookies'
 import helper from "lib/helper";
 import Select from 'react-select';
-import CKEditor from "react-ckeditor-component";
 import { btnSave, rmDot, toCurrency } from "helpers/general";
+import CKEditor from 'ckeditor4-react';
 
 type InitialForm = {
     title: string;
@@ -54,7 +54,7 @@ const FormTenant: React.FC = (datum:any) => {
     const [service,setService]= useState([]);
     const [serviceBilling,setServiceBilling]= useState([]);
     const [isService, setIsService] = useState(true);
-    
+
     let TenantValidation = yup.object().shape({
         title: yup.string().required("title is required"),
         server_name: yup.string().required("server name is required"),
@@ -104,12 +104,14 @@ const FormTenant: React.FC = (datum:any) => {
         
         
         if (history.query.keyword === 'add') {
-            await handlePost(url, parseData, (datum,msg) => {
+            await handlePost(url, parseData, (datum, msg) => {
+                console.log(datum)
                 helper.mySwalWithCallback(msg, () => history.back())
             });
         }
         else {
-            await handlePut(url + '/' + history.query.keyword,parseData, (datum,msg) => {
+            await handlePut(url + '/' + history.query.keyword, parseData, (datum, msg) => {
+                console.log(datum)
                 helper.mySwalWithCallback(msg, () => history.back())
             })
         }
@@ -147,14 +149,16 @@ const FormTenant: React.FC = (datum:any) => {
     useEffect(() => {
         let dataServiceTenant:any = [];
         let dataServiceBilling:any = [];
-        datum.datum.data.map((val:iService, key:number) => {
+        datum.datum.data.map((val: iService, key: number) => {
+            console.log(key)
             dataServiceTenant.push({ value: val.id, label: val.title });
         })
         setService(dataServiceTenant);
         handleChangeService({value: dataServiceTenant[0].value, label: dataServiceTenant[0].label})
        
         if (history.query.keyword === 'add') {
-            datum.serviceBilling.data.map((val:iService, key:number) => {
+            datum.serviceBilling.data.map((val: iService, key: number) => {
+                console.log(key)
                 dataServiceBilling.push({ value: val.id, label: val.title });
             })
             setServiceBilling(dataServiceBilling);
@@ -170,12 +174,12 @@ const FormTenant: React.FC = (datum:any) => {
     const handleChangeServiceBilling = (val: any) => {
         setIdServiceBilling(val.value)
     }
-     const  onChange = (evt:any) => {
-         var newContent = evt.editor.getData();
-         setNote(newContent);
-    }
+    
 
    
+   const onChange = (event: any) => {
+    console.log(event.target);
+  };
     return (
         <Layout title={`Form ${history.query.keyword==='add'?'Add':'Edit'} Tenant` }>
             
@@ -188,6 +192,7 @@ const FormTenant: React.FC = (datum:any) => {
                     />
                 </div>
                 <br />
+               
                 <FormProvider
                     {...{
                 
@@ -209,6 +214,7 @@ const FormTenant: React.FC = (datum:any) => {
                 >
                 <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="flex flex-col lgap-5 pb-2">
+                            
                     <div className="flex flex-row w-full mb-9">
                         <label className="font-medium text-gray-200 w-1/4">
                             Title  <span className="text-red-600">*</span>
@@ -386,14 +392,8 @@ const FormTenant: React.FC = (datum:any) => {
                             />
                         </div>
                     </div>)}
-                    <div className="mt-2">
-                                <CKEditor
-                        activeClass="p10"
-                        content={note}
-                        events={{
-                            "change": onChange
-                        }}
-                    />
+                            <div className="mt-2">
+                                 <CKEditor data={note} onChange={onChange} />
                     </div>
                 </div>
                 <div className="flex justify-end w-full" style={{ marginTop: 16 }}>

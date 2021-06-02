@@ -44,7 +44,6 @@ const IndexBilling: React.FC = (datum:any) => {
          }
     }, [search, numPagin])
     
-    console.log(datum.datum.total_amount)
     return (
         <Layout title="Billing">
             <div className="container grid  lg:px-6 mx-auto">

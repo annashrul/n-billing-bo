@@ -8,7 +8,7 @@ import SubHeader from "helpers/subHeader";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import 'antd/dist/antd.css';
-import { handleGet, handlePost } from "lib/handleAction";
+import { handlePost } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import nookies from 'nookies'
@@ -61,14 +61,16 @@ const FormBilling: React.FC = (props: any) => {
         let service: any = [];
 
         if (props.tenant.data.length > 0) {
-            props.tenant.data.map((val:iTenant, key:number) => {
+            props.tenant.data.map((val: iTenant, key: number) => {
+                console.log(key)
                 tenant.push({value:val.id,label:val.title})
             })
             handleChangeTenant({ value: props.tenant.data[0].id, label: props.tenant.data[0].title })
         }
         setDataTenant(tenant);
         if (props.service.data.length > 0) {
-            props.service.data.map((val:iService, key:number) => {
+            props.service.data.map((val: iService, key: number) => {
+                 console.log(key)
                 service.push({value:val.id,label:val.title})
             })
             handleChangeService({ value: props.service.data[0].id, label: props.service.data[0].title })
@@ -89,7 +91,8 @@ const FormBilling: React.FC = (props: any) => {
             amount:rmDot(data.amount),
             service:idService
         };
-        await handlePost(url, parseData, (datum,msg) => {
+        await handlePost(url, parseData, (datum, msg) => {
+            console.log(datum)
             helper.mySwalWithCallback(msg, () => history.back())
         });
     }

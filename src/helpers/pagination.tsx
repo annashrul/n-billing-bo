@@ -29,7 +29,7 @@ const PaginationQ: React.FC<Props> = (props) => {
             }
         }
         return () => {
-            setPageNumber(prev => [])
+            setPageNumber([])
         }
     },[props]);
 
@@ -45,7 +45,7 @@ const PaginationQ: React.FC<Props> = (props) => {
             l = i;
         }
         return () => {
-            setPageNumberWithDots(prev => [])
+            setPageNumberWithDots([])
         }
     }, [pageNumber])
     return (
