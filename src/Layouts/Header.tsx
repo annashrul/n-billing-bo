@@ -14,13 +14,11 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({toggleSidebar,openProfile,toggleProfile}) => {
   const router = useRouter()
-  const [nama,setNama]=React.useState('-');
-  const [foto,setFoto]=React.useState('-');
+ 
   useEffect(() => {
     // const coo: string=Cookies.get('__uid')!;
     // const datum:iUser= JSON.parse(atob(coo));
-    setNama('-')
-    setFoto('')
+   
 
 	}, []);
   const actLogout=()=>{
@@ -58,8 +56,8 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar,openProfile,toggleProfile}
             </button>
              */}
             <button  className="flex flex-row items-center space-x-2 w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent text-gray-700 dark:text-gray-400  md:w-auto md:inline md:mt-0 md:ml-4 focus:bg-gray-800 focus:outline-none focus:shadow-outline" onClick={()=>{toggleProfile(!openProfile)}}>
-              <span>{nama}</span>
-              <img className="inline h-6 rounded-full" src={foto==='-'?"https://avatars2.githubusercontent.com/u/24622175?s=60&v=4":foto} />
+              <span>{'PT NETINDO MEDIATAMA PERKASA'}</span>
+              <img className="inline h-6 rounded-full" src={'/logo.png'} />
               <svg fill="currentColor" viewBox="0 0 20 20"className="inline w-4 h-4 transition-transform duration-200 transform">
                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>

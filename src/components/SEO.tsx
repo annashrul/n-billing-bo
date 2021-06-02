@@ -15,7 +15,7 @@ const SEO: React.FC<SEOProps> = ({ description, keywords, title }) => (
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:site" content="" />
-    <meta name="twitter:creator" content="@prowara" />
+    <meta name="twitter:creator" content="@netindo" />
     <meta name="twitter:image" content="" />
     <meta property="og:image" content="" />
     {/* <meta httpEquiv="Content-Security-Policy"

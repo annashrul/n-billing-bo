@@ -1,29 +1,28 @@
 import React, { useState, useEffect } from "react";
 import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
-
 import Helper from 'lib/helper';
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import { } from '@windmill/react-ui'
 import nookies from 'nookies'
-import TableBilling from "components/billing/table";
-import {useRouter} from 'next/router'
 import { handleDelete, handleGet } from "lib/handleAction";
 import { iBilling, iPagin} from "lib/interface";
+import TablePage from "components/Common/tablePage";
+import { onlyDate, status, td, toCurrency } from "helpers/general";
+import {useRouter} from 'next/router'
+import {  MdNotInterested,MdCached } from 'react-icons/md';
+import 'antd/dist/antd.css';
 import PaginationQ from "helpers/pagination";
 
 
-
-
-
 const IndexBilling: React.FC = (datum:any) => {
-  const router = useRouter()
     const [data,setData]= useState<Array<iBilling>>([]);
     const [pagin, setPagin] = useState<iPagin>();
     const [search, setSearch] = useState('');
     const [numPagin, setNumPagin] = useState(1);
-
+    const router = useRouter()
+    console.log(datum)
     const handleGets = async () => {
         let url: string = `management/billing?page=${numPagin}`
         if (search !== '') url += `&q=${search}`;
@@ -43,40 +42,63 @@ const IndexBilling: React.FC = (datum:any) => {
             setPagin(datum.datum);
          }
     }, [search, numPagin])
-    
+    let totAmounPerPage = 0;
     return (
-        <Layout title="Billing">
-            <div className="container grid  lg:px-6 mx-auto">
-                <div className="flex justify-between">
-                    <div>
-                        <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">
-                            Billing
-                        </h2>
+        <Layout title={router.pathname.replace("/","")}>
+            <TablePage
+                onChange={(event) => setSearch(event.target.value)}
+                dataHeader={[
+                    {title:'Tenant',colSpan:1,rowSpan:1},
+                    {title:'Period',colSpan:1,rowSpan:1},
+                    {title:'Amount',colSpan:1,rowSpan:1},
+                    {title:'Status',colSpan:1,rowSpan:1},
+                    {title:'Due date',colSpan:1,rowSpan:1},
+                    {title:'Created at',colSpan:2,rowSpan:1},
+                ]}
+                renderRow={
+                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
+                        {
+                            data.length > 0 ? data.map((val: any, key: number) => {
+                                totAmounPerPage = totAmounPerPage + parseInt(val.amount, 10);
+                                return (
+                                    <tr key={key}>
+                                        {td(val.tenant)}
+                                        {td(val.period+' month')}
+                                        {td(toCurrency(val.amount))}
+                                        {td(status(val.status))}
+                                        {td(onlyDate(val.due_date))}
+                                        {td(onlyDate(val.created_at))}
+                                        {td(
+                                            <>
+                                            <MdCached size={24} className="cursor-pointer mr-2" color={'#9E9E9E'} onClick={() => {
+                                                router.push({ pathname: '/billing/detail', query: val, },'billing/edit')
+                                            }} />
+                                            <MdNotInterested size={24} className="cursor-pointer" color={'#9E9E9E'} onClick={async () => await handleDelete(Api.apiClient + 'management/billing/' + val.id, () => handleGets())} />
+                                            </>,
+                                            "flex flex-row"
+                                        )}
+                                    </tr>
+                                );
+                            }):<tr><td  className="py-3 px-6 whitespace-nowrap font-normal text-center" colSpan={7}>Empty data</td></tr>
+                        }
+                    </tbody>
+                }
+            />
+           <div className="flex lg:flex-row xs:flex-col lg:justify-between mb-2 mt-1 container lg:px-6 mx-auto">
+                
+                {
+                   <div className="w-full">
+                        <div className="flex flex-row">
+                            <h1 className="lg:w-1/4 xs:w-1/2 font-normal text-gray-700 dark:text-gray-400">Total per page</h1>
+                            <h1 className="lg:w-1/4 xs:w-1/2 font-normal text-gray-700 dark:text-gray-400">: {toCurrency(totAmounPerPage.toString())}</h1>
+                        </div>
+                        <div className="flex flex-row">
+                            <h1 className="lg:w-1/4 xs:w-1/2 font-normal text-gray-700 dark:text-gray-400">Total all page</h1>
+                            <h1 className="lg:w-1/4 xs:w-1/2 font-normal text-gray-700 dark:text-gray-400">: {toCurrency(datum.datum.total_amount)}</h1>
+                        </div>
                     </div>
-                </div>
-                <br/>
-                <div className="w-full rounded-lg">
-                   <div className="flex flex-row justify-between mb-2">
-                    <div className="flex relative w-72">
-                        <input 
-                            type="search"
-                            className="dark:border-gray-600 dark:bg-gray-700 focus:outline-none dark:text-gray-300 w-full rounded px-3 py-2.5" 
-                            placeholder="Search"
-                            onChange={(event) => {
-                                setSearch(event.target.value);
-                            }}/>
-                       
-                    </div>
-                    <div className="flex items-center ">
-                        <button className="rounded text-white bg-yellow-400 font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/billing/form',query: { keyword: 'add' }},'billing/add')}>Add Billing</button>
-                    </div>
-                    </div>
-                    <TableBilling
-                        data={data===undefined?[]:data}
-                        onDelete={async (id) => await handleDelete(Api.apiClient + 'management/billing/' + id, () => handleGets())}
-                        totalAmount={datum.datum.total_amount}
-                    />
-                    <br />
+                }
+                <div className="w-full">
                     <PaginationQ
                         count={ pagin?.per_page}
                         page={numPagin}

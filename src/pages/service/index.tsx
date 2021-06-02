@@ -10,10 +10,11 @@ import nookies from 'nookies'
 import {useRouter} from 'next/router'
 import { handleDelete, handleGet } from "lib/handleAction";
 import { iPagin, iService} from "lib/interface";
-import TableService from "components/service/table";
 
 import 'antd/dist/antd.css';
 import PaginationQ from "helpers/pagination";
+import TablePage from "components/Common/tablePage";
+import { btnDelete, btnEdit, td } from "helpers/general";
 
 
 
@@ -45,61 +46,61 @@ const IndexService: React.FC = () => {
            
     return (
         <Layout title="Service">
+            <TablePage
+                renderHeader={
+                    <div className="flex py-4 cursor-pointer">
+                        <div style={{borderBottom:category==="0"?"1px solid white":"none"}} onClick = {() => {
+                            setCategory("0")
+                        }}>	
+                            <h1 className=" text-white text-center">
+                                Tenant
+                            </h1>
+                        </div>
+                        <div className="ml-8" style={{borderBottom:category==="1"?"1px solid white":"none"}} onClick = {() => {
+                            setCategory("1")
+                        }}>
+                            <h1 className=" text-white text-center">
+                                Billing
+                            </h1>
+                        </div>
+                    </div>
+                }
+                onChange={(event) => setSearch(event.target.value)}
+                dataHeader={[
+                    {title:'Title',colSpan:1,rowSpan:1},
+                    {title:'#',colSpan:1,rowSpan:1},
+                ]}
+                renderRow={
+                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
+                        {
+                            data.length > 0 ? data.map((val: any, key: number) => {
+                                return (
+                                    <tr key={key}>
+                                        {td(val.title)}
+                                        {td(
+                                            <>
+                                            {btnEdit(()=>router.push({pathname: '/service/form', query: { keyword: val.id }},'service/edit'))}
+                                            {btnDelete(async () => await handleDelete(Api.apiClient + 'management/service/' + val.id, () => handleGets()))}
+                                            </>,
+                                            "flex flex-row"
+                                        )}
+                                    </tr>
+                                );
+                            }):<tr><td  className="py-3 px-6 whitespace-nowrap font-normal text-center" colSpan={7}>Empty data</td></tr>
+                        }
+                    </tbody>
+                }
+            />
+
             <div className="container grid  lg:px-6 mx-auto">
-                <div className="flex justify-between">
-                    <div>
-                        <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">
-                            Service
-                        </h2>
-                    </div>
-                </div>
-                <br />
-                <div className="flex mt-2 py-4 cursor-pointer">
-					<div style={{borderBottom:category==="0"?"1px solid white":"none"}} onClick = {() => {
-						setCategory("0")
-					}}>	
-						<h1 className=" text-white text-center">
-							Tenant
-						</h1>
-					</div>
-					<div className="ml-8" style={{borderBottom:category==="1"?"1px solid white":"none"}} onClick = {() => {
-						setCategory("1")
-					}}>
-						<h1 className=" text-white text-center">
-							Billing
-						</h1>
-					</div>
-				</div>
-                <br/>
-                <div className="w-full rounded-lg">
-                   <div className="flex flex-row justify-between mb-2">
-                    <div className="flex relative w-72">
-                        <input 
-                            type="search"
-                            className="dark:border-gray-600 dark:bg-gray-700 focus:outline-none dark:text-gray-300 w-full rounded px-3 py-2.5" 
-                            placeholder="Search"
-                            onChange={(event) => {
-                                setSearch(event.target.value);
-                            }}/>
-                    </div>
-                    <div className="flex items-center ">
-                        <button className="rounded text-white bg-yellow-400  font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:'/service/form', query: { type:category}},'service/add')}>Add Service</button>
-                    </div>
-                    </div>
-                    <TableService
-                        data={data}
-                        onDelete={async (id) => await handleDelete(Api.apiClient + 'management/service/' + id, () => handleGets())}
-                    />
-                    <br />
-                    <PaginationQ
-                        count={ pagin?.per_page}
-                        page={numPagin}
-                        totalPage={Math.ceil((pagin===undefined?0:pagin.total)/(pagin===undefined?0:pagin.per_page))}
-                        onNext={()=>setNumPagin(numPagin + 1)}
-                        onPrev={()=>setNumPagin(numPagin - 1)}
-                        handlGotoPage={(pageN) => setNumPagin(pageN)}
-                    />
-                </div>
+                <PaginationQ
+                    count={ pagin?.per_page}
+                    page={numPagin}
+                    totalPage={Math.ceil((pagin===undefined?0:pagin.total)/(pagin===undefined?0:pagin.per_page))}
+                    onNext={()=>setNumPagin(numPagin + 1)}
+                    onPrev={()=>setNumPagin(numPagin - 1)}
+                    handlGotoPage={(pageN) => setNumPagin(pageN)}
+                />
             </div>
         </Layout>
     );

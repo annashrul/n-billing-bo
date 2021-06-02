@@ -2,13 +2,14 @@
 
 import { MdDoneAll, MdClose} from 'react-icons/md';
 import moment from 'moment';
+import {  MdEdit, MdDelete} from 'react-icons/md';
 
 export const status = (val:any) => {
     if (parseInt(val) === 0) {
         return <MdClose size={24} className="cursor-pointer" color={'#9E9E9E'}/>
     }
     else {
-        <MdDoneAll size={24} className="cursor-pointer" color={'#9E9E9E'}/>
+        return <MdDoneAll size={24} className="cursor-pointer" color={'#9E9E9E'}/>
     }
 }
 
@@ -42,4 +43,19 @@ export const toCurrency = (angka:any,prefix?:any) => {
 
 export const rmDot = (res:any) => {
     return res.replaceAll(".","")
+}
+
+export const td = (val:any,className:any='',onClick?:()=>void) => {
+    return <td className={`py-3 px-6 whitespace-nowrap font-normal ${className}`} onClick={onClick}>{val}</td>
+}
+
+export const btnEdit = (onClick:()=>void) => {
+    return (
+        <MdEdit size={24} className="cursor-pointer" color={'#9E9E9E'} onClick={onClick} />
+    );
+}
+export const btnDelete = (onClick:()=>void) => {
+    return (
+        <MdDelete size={24} className="cursor-pointer" color={'#9E9E9E'} onClick={onClick} />
+    );
 }
