@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import { } from '@windmill/react-ui'
 import {useRouter} from 'next/router'
@@ -7,13 +6,13 @@ import SubHeader from "helpers/subHeader";
  import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import 'antd/dist/antd.css';
 import { handlePost, handlePut } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import nookies from 'nookies'
 import helper from "lib/helper";
 import { btnSave } from "helpers/general";
+import 'antd/dist/antd.css';
 
 type InitialForm = {
     title: string;

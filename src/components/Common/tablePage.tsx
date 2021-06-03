@@ -38,11 +38,11 @@ const TablePage = (props: Props) => {
                     <div className="w-full overflow-hidden rounded-lg shadow-xs mb-8">
                         <div className="w-full text-left overflow-x-auto">
                             <table className="w-full whitespace-no-wrap">
-                                    <thead className="w-full border-b border-gray-boder">
+                                    <thead className="w-full border-b border-gray-boder whitespace-no-wrap">
                                     <tr>
                                         {
                                             props.dataHeader.map((val: any, key: number) => {
-                                                return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className={`py-3 px-6 text-white font-normal ${val.className}`} rowSpan={val.rowSpan} colSpan={val.colSpan}>{val.title}</th>
+                                                return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className={`py-3 px-6 text-white font-normal whitespace-no-wrap ${val.className}`} rowSpan={val.rowSpan} colSpan={val.colSpan}>{val.title}</th>
                                             })
                                         }
                                     </tr>
@@ -50,7 +50,7 @@ const TablePage = (props: Props) => {
                                         props.dataColspan !== undefined && <tr>
                                             {
                                                 props.dataColspan.map((val: any, key: number) => {
-                                                    return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className="py-3 px-6 text-white font-normal text-center">{val}</th>
+                                                    return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className="py-3 px-6 text-white font-normal text-center whitespace-no-wrap">{val}</th>
                                                 })
                                             }
                                         </tr>

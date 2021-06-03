@@ -18,7 +18,7 @@ const Sidebar: React.FC<iSidebar> = ({ isOpen, toggleSidebar }) => {
         <div className="pb-2 text-gray-500 dark:text-gray-400">
           <div className="bg-white dark:bg-gray-800 sticky top-0 z-10">
             <a className="flex items-center justify-center" href="#">
-              <img className="w-110 h-10 mt-5" src="/logo.png" alt="" aria-hidden="true" />
+              <img className="w-110 h-10 mt-2" src="/logo_1.png" alt="" aria-hidden="true" />
             </a>
           </div>
           <ul className="mt-2">

@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import { } from '@windmill/react-ui'
 import {useRouter} from 'next/router'
@@ -8,7 +7,6 @@ import SubHeader from "helpers/subHeader";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Switch} from 'antd';
-import 'antd/dist/antd.css';
 import { handlePost } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
@@ -16,7 +14,7 @@ import nookies from 'nookies'
 import helper from "lib/helper";
 import moment from 'moment';
 import { btnSave, dateAndTime, rmDot, status, toCurrency } from "helpers/general";
-
+import 'antd/dist/antd.css';
 type InitialForm = {
     id_billing: string;
     isChange: string;

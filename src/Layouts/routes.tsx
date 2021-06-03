@@ -4,7 +4,7 @@ import {Home,users,Ticket,Genealogy} from 'icons';
 const Routes=[
     {
         link:'/',
-        title:'Home',
+        title:'Dashboard',
         icon: Home,
         routes:[]
     },

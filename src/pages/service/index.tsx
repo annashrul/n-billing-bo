@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
-
 import Helper from 'lib/helper';
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
@@ -10,8 +8,6 @@ import nookies from 'nookies'
 import {useRouter} from 'next/router'
 import { handleDelete, handleGet } from "lib/handleAction";
 import { iPagin, iService} from "lib/interface";
-
-import 'antd/dist/antd.css';
 import PaginationQ from "helpers/pagination";
 import TablePage from "components/Common/tablePage";
 import { btnDelete, btnEdit, td } from "helpers/general";
@@ -42,7 +38,10 @@ const IndexService: React.FC = () => {
     }, [search, numPagin,category])
     
     
-
+    const dataHeader=[
+                    {title:'Title',colSpan:1,rowSpan:1},
+                    {title:'#',colSpan:1,rowSpan:1},
+                ]
            
     return (
         <Layout title="Service">
@@ -52,24 +51,21 @@ const IndexService: React.FC = () => {
                         <div style={{borderBottom:category==="0"?"1px solid white":"none"}} onClick = {() => {
                             setCategory("0")
                         }}>	
-                            <h1 className=" text-white text-center">
+                            <h1 className=" text-white font-bold text-center">
                                 Tenant
                             </h1>
                         </div>
                         <div className="ml-8" style={{borderBottom:category==="1"?"1px solid white":"none"}} onClick = {() => {
                             setCategory("1")
                         }}>
-                            <h1 className=" text-white text-center">
+                            <h1 className=" text-white font-bold text-center">
                                 Billing
                             </h1>
                         </div>
                     </div>
                 }
                 onChange={(event) => setSearch(event.target.value)}
-                dataHeader={[
-                    {title:'Title',colSpan:1,rowSpan:1},
-                    {title:'#',colSpan:1,rowSpan:1},
-                ]}
+                dataHeader={dataHeader}
                 renderRow={
                      <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
                         {
@@ -86,7 +82,7 @@ const IndexService: React.FC = () => {
                                         )}
                                     </tr>
                                 );
-                            }):<tr><td  className="py-3 px-6 whitespace-nowrap font-normal text-center" colSpan={7}>Empty data</td></tr>
+                            }):<tr><td  className="py-3 px-6 whitespace-nowrap font-normal text-center" colSpan={dataHeader.length}>Empty data</td></tr>
                         }
                     </tbody>
                 }

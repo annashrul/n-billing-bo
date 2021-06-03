@@ -1,5 +1,4 @@
 import React, {useEffect,useState} from "react";
-import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import { } from '@windmill/react-ui'
 import {useRouter} from 'next/router'
@@ -7,7 +6,6 @@ import SubHeader from "helpers/subHeader";
  import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import 'antd/dist/antd.css';
 import { handlePost } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
@@ -16,6 +14,7 @@ import helper from "lib/helper";
 import { btnSave, rmDot, toCurrency} from "helpers/general";
 import Select from 'react-select';
 import { iSelect, iService, iTenant } from "lib/interface";
+import 'antd/dist/antd.css';
 
 type InitialForm = {
     id_tenant: string;

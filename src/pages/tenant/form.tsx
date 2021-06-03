@@ -1,5 +1,4 @@
 import React, {useEffect,useState} from "react";
-import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import { } from '@windmill/react-ui'
 import {useRouter} from 'next/router'
@@ -8,7 +7,6 @@ import SubHeader from "helpers/subHeader";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Radio} from 'antd';
-import 'antd/dist/antd.css';
 import { handlePost, handlePut } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
@@ -18,6 +16,10 @@ import helper from "lib/helper";
 import Select from 'react-select';
 import { btnSave, rmDot, toCurrency } from "helpers/general";
 import CKEditor from 'ckeditor4-react';
+import 'antd/dist/antd.css';
+
+
+
 
 type InitialForm = {
     title: string;
@@ -40,12 +42,7 @@ type InitialForm = {
 }
 
 
-
-
-
-
 const FormTenant: React.FC = (datum:any) => {
-   
     const history = useRouter();
     const [monthlyBilling, setMonthlyBilling] = useState('1');
     const [note, setNote] = useState('');
@@ -101,6 +98,8 @@ const FormTenant: React.FC = (datum:any) => {
                 service: idServiceBilling, 
             }
         }
+
+        // console.log(parseData);
         
         
         if (history.query.keyword === 'add') {
@@ -177,8 +176,12 @@ const FormTenant: React.FC = (datum:any) => {
     
 
    
-   const onChange = (event: any) => {
-    console.log(event.target);
+    const onChange = (event: any) => {
+       var content = CKEditor.instances['editor1'].getData();
+
+
+    //    console.log(content);
+    //    setNote(event.target.value);
   };
     return (
         <Layout title={`Form ${history.query.keyword==='add'?'Add':'Edit'} Tenant` }>
@@ -392,8 +395,11 @@ const FormTenant: React.FC = (datum:any) => {
                             />
                         </div>
                     </div>)}
-                            <div className="mt-2">
-                                 <CKEditor data={note} onChange={onChange} />
+                    <div className="mt-2">
+                                <CKEditor
+                                    data={note}
+                                    onChange={(event: any) => { const dataEditor = event.editor.getData(); setNote(dataEditor) }}
+                                />
                     </div>
                 </div>
                 <div className="flex justify-end w-full" style={{ marginTop: 16 }}>

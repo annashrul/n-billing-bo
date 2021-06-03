@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import Helper from 'lib/helper';
 import Api from 'lib/httpService';
@@ -12,9 +11,11 @@ import { iPagin, iTenant } from "lib/interface";
 import PaginationQ from "helpers/pagination";
 import TablePage from "components/Common/tablePage";
 import { btnDelete, btnEdit, status, td } from "helpers/general";
-import { Drawer, Button} from 'antd';
-
-
+import { Drawer} from 'antd';
+import { isMobileOnly,isTablet } from 'react-device-detect';
+import { MdClose } from "react-icons/md";
+import parse from 'html-react-parser';
+import 'antd/dist/antd.css';
 
 const tempDetail = (title:string, desc:any) => {
     return (
@@ -26,18 +27,23 @@ const tempDetail = (title:string, desc:any) => {
     );
 }
 
+const titleHeader = (title: string) => {
+    return <thead className="w-full "><tr><th colSpan={3}><h1 className="text-white w-full text-lg font-bold">{title}</h1> </th></tr></thead>
+}
 
 
 
-const IndexTenant: React.FC = (datum:any) => {
+
+const IndexTenant: React.FC = (datum: any) => {
+    const limit = 0;
     const router = useRouter()
     const [data,setData]= useState<Array<iTenant>>([]);
     const [pagin, setPagin] = useState<iPagin>();
     const [search, setSearch] = useState('');
     const [numPagin, setNumPagin] = useState(1);
     const [visible,setVisible]= useState<boolean>(false);
-    const [idx,setIdx]= useState<number>(0);
-
+    const [idx,setIdx]= useState<number>(limit);
+    
     const handleGets = async () => {
         let url: string = `management/tenant?page=${numPagin}`
         if (search !== '') url += `&q=${search}`;
@@ -56,27 +62,33 @@ const IndexTenant: React.FC = (datum:any) => {
             setData(datum.datum.data);
             setPagin(datum.datum);
          }
-    }, [search,numPagin])
-    return (
-        <Layout title="Tenant">
-            <TablePage
-                onChange={(event) => setSearch(event.target.value)}
-                dataHeader={[
+    }, [search, numPagin])
+    console.log(isMobileOnly)
+    const onCloseDrawer = () => {
+        setVisible(false)
+        setIdx(limit);
+    }
+    const dataHeader=[
                     {title:'Tenant',colSpan:1,rowSpan:2},
                     {title:'Service',colSpan:1,rowSpan:2},
                     {title:'Server name',colSpan:1,rowSpan:2},
                     {title:'Monthly billing',colSpan:1,rowSpan:2},
                     {title:'Billing active',colSpan:1,rowSpan:2},
                     {title:'Storage',colSpan:2,rowSpan:1,className:"text-center"},
-                    {title:'#',colSpan:1,rowSpan:2},
-                ]}
+                    {title:'#',colSpan:1,rowSpan:2,className:"text-center"},
+                ]
+    return (
+        <Layout title="Tenant">
+            <TablePage
+                onChange={(event) => setSearch(event.target.value)}
+                dataHeader={dataHeader}
                 dataColspan={['Folder','Database']}
                 renderRow={
                      <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
                         {
                             data.length > 0 ? data.map((val: any, key: number) => {
                                 return (
-                                    <tr key={key}>
+                                    <tr key={key} className={`${idx===key&&(visible&&'bg-black')}`}>
                                         {td(val.title,"cursor-pointer",()=>{setIdx(key);setVisible(true)})}
                                         {td(val.service,"cursor-pointer",()=>{setIdx(key);setVisible(true)})}
                                         {td(val.server_name,"cursor-pointer",()=>{setIdx(key);setVisible(true)})}
@@ -93,7 +105,7 @@ const IndexTenant: React.FC = (datum:any) => {
                                         )}
                                     </tr>
                                 );
-                            }):<tr><td  className="py-3 px-6 whitespace-nowrap font-normal text-center" colSpan={7}>Empty data</td></tr>
+                            }):<tr><td  className="py-3 px-6 whitespace-nowrap font-normal text-center" colSpan={dataHeader.length+1}>Empty data</td></tr>
                         }
                     </tbody>
                 }
@@ -110,35 +122,32 @@ const IndexTenant: React.FC = (datum:any) => {
                 />
             </div>
             {
-
-             data.length>0&&<Drawer
-                title={data[idx].title}
-                width={720}
-                placement={'right'}
+                data.length > 0 && 
+                    
+                        <Drawer
+                    className="text-gray-400"
+                width={isMobileOnly||isTablet?'auto':'800'}
+                    title={
+                        <div className={`flex flex-row justify-between`}>
+                            <div className="text-white font-bold">{data[idx].title}</div>
+                            <MdClose size={24} className="cursor-pointer" onClick={()=>onCloseDrawer()}/>
+                        </div>
+                    }
+                placement="right"
                 closable={false}
-                onClose={()=>setVisible(false)}
+                onClose={()=>onCloseDrawer()}
                 visible={visible}
-                key={'right'}
-                bodyStyle={{ paddingBottom: 80 }}
-
-                footer={
-            <div style={{textAlign: 'right'}} >
-            <Button onClick={() => { setVisible(false);}} style={{ marginRight: 8 }}>
-                Close
-              </Button>
-            </div>
-          }
-                >
-            <h1 className="text-lg font-bold">Contact detail</h1>
+                
+            >
+            <h1 className="text-white text-lg font-bold">Contact detail</h1>
             <table className="w-full relative text-left whitespace-no-wrap">
                 <thead className="w-full ">
                     {tempDetail('responsible', data[idx].responsible)}
-                    {tempDetail('Phone number', data[idx].telp)}
+                    {tempDetail('Phone number', <a target="_blank" href={`https://wa.me/${'+6281223165037'}/?text=urlencodedtext`}>{data[idx].telp}</a>)}
                     {tempDetail('Email', data[idx].email)}
                     {tempDetail('Address', data[idx].address)}
                 </thead>
-                <thead className="w-full "><tr><th colSpan={3}><hr/></th></tr></thead>
-                <h1 className="w-full text-lg font-bold">Service detail</h1>
+                        {titleHeader('Service detail')}
                 <thead className="w-full">
                     {tempDetail('Service', data[idx].service)}
                     {tempDetail('Server name', data[idx].server_name)}
@@ -146,22 +155,21 @@ const IndexTenant: React.FC = (datum:any) => {
                     {tempDetail('Monthly billing',status(data[idx].monthly_billing))}
                     {tempDetail('Billing active', data[idx].billing_active)}
                     {tempDetail('Api',data[idx].api)}
-                    {tempDetail('Back office',data[idx].backoffice)}
+                            {tempDetail('Back office', <a href={data[idx].backoffice} target="_blank">{data[idx].backoffice}</a>)}
                     {tempDetail('Front end', data[idx].frontend)}
                         </thead>
-                       <thead className="w-full "><tr><th colSpan={3}><hr/></th></tr></thead>
-                        <h1 className="w-full text-lg font-bold">Usage detail</h1>
+{titleHeader('Usage detail')}
                 <thead className="w-full">
                     {tempDetail('Folder', data[idx].storage_used)}
                     {tempDetail('Database', data[idx].usage_db)}
                         </thead>
-                        <thead className="w-full "><tr><th colSpan={3}><hr/></th></tr></thead>
             </table>
-            <h1 className="text-lg font-bold">Note</h1>
-            <div dangerouslySetInnerHTML={{ __html: data[idx].note.replace(/\n/g, '<br/>')}}></div>
-        </Drawer>
-            }
+                    <h1 className="text-white text-lg font-bold">Note</h1>
+                    {parse(data[idx].note)}
+            </Drawer>
+                    
 
+            }
         </Layout>
     );
 }
