@@ -10,8 +10,7 @@ import { handlePost, handlePut } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import nookies from 'nookies'
-import helper from "lib/helper";
-import { btnSave } from "helpers/general";
+import { btnSave, decode, swalWithCallback } from "helpers/general";
 import 'antd/dist/antd.css';
 
 type InitialForm = {
@@ -56,14 +55,14 @@ const FormService: React.FC = () => {
         if (history.query.id === undefined) {
             await handlePost(url, parseData, (datum, msg) => {
                 console.log(datum);
-                helper.mySwalWithCallback(msg, () => history.back())
+               swalWithCallback(msg, () => history.back())
             });
         }
         else {
             await handlePut(url + '/' + history.query.id, parseData, (datum, msg) => {
                                 console.log(datum);
 
-                helper.mySwalWithCallback(msg, () => history.back())
+               swalWithCallback(msg, () => history.back())
             })
         }
         
@@ -140,7 +139,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
     if(!cookies._nbilling){
         return {redirect: {destination: '/auth/login',permanent: false}}
     }else{
-        Api.axios.defaults.headers.common["Authorization"] = helper.decode(cookies._nbilling);
+        Api.axios.defaults.headers.common["Authorization"] = decode(cookies._nbilling);
     }
     
     let datum: any = [];

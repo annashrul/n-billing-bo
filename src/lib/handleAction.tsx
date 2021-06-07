@@ -1,12 +1,12 @@
 import NProgress from 'nprogress'; //nprogress module
 import Api from 'lib/httpService';
 import Swal from 'sweetalert2';
-import helper from './helper';
+import { swal, swallOption } from 'helpers/general';
 
-const strNetworkError = 'a network error occurred!';
-const strServerError = 'a server error occurred';
+const strNetworkError = 'a network error occurred.';
+const strServerError  = 'a server error occurred.';
 const strSuccessSaved = 'Data has been saved.';
-const strFailedSaved = 'Oppss .. data failed to saved';
+const strFailedSaved  = 'Oppss .. data failed to saved.';
 
 
 export const loading =  (isStatus:boolean=true) => {
@@ -24,13 +24,13 @@ export const loading =  (isStatus:boolean=true) => {
 
 export const handleError = (err: any) => {
   if (err.message === 'Network Error') {
-    helper.mySwal(strNetworkError);
+    swal(strNetworkError);
   } else {
     if (err.response !== undefined) {
       if (err.response.data.msg !== undefined) {
-        helper.mySwal(err.response.data.msg);
+        swal(err.response.data.msg);
       } else {
-        helper.mySwal(strServerError);
+        swal(strServerError);
       }
     }
   }
@@ -92,7 +92,7 @@ export const handlePut = async (url: string,data: any,callback: (datum: any, msg
 };
 
 export const handleDelete = async (url: string,callback:()=>void) => {
-  helper.mySwallOption('Are you sure ?', async() => {
+  swallOption('Are you sure ?', async() => {
     loading(true);
     try {
       await Api.delete(url);
@@ -100,9 +100,6 @@ export const handleDelete = async (url: string,callback:()=>void) => {
       setTimeout(function () {
         loading(false);
       }, 800);
-     
-
-     
     } catch (err) {
       setTimeout(function () {
         loading(false);

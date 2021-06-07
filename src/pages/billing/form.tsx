@@ -6,15 +6,15 @@ import SubHeader from "helpers/subHeader";
  import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { handlePost } from "lib/handleAction";
+import { handleGet, handlePost } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import nookies from 'nookies'
-import helper from "lib/helper";
-import { btnSave, rmDot, toCurrency} from "helpers/general";
+import { btnSave, decode, rmDot, swalWithCallback, toCurrency} from "helpers/general";
 import Select from 'react-select';
-import { iSelect, iService, iTenant } from "lib/interface";
+import { iSelect,  iTenant } from "lib/interface";
 import 'antd/dist/antd.css';
+import { getServiceOption } from "helpers/reusableService";
 
 type InitialForm = {
     id_tenant: string;
@@ -40,7 +40,7 @@ const TenantValidation = yup.object().shape({
 
 
 
-const FormBilling: React.FC = (props: any) => {
+const FormBilling: React.FC = () => {
     const history = useRouter();
     const [idTenant,setIdTenant]= useState('');
     const [dataTenant, setDataTenant] = useState([]);
@@ -53,30 +53,35 @@ const FormBilling: React.FC = (props: any) => {
 		mode: "all"
     });
 
-   
-    useEffect(() => {
-       
-        let tenant: any = [];
-        let service: any = [];
 
-        if (props.tenant.data.length > 0) {
-            props.tenant.data.map((val: iTenant, key: number) => {
-                console.log(key)
-                tenant.push({value:val.id,label:val.title})
-            })
-            handleChangeTenant({ value: props.tenant.data[0].id, label: props.tenant.data[0].title })
-        }
-        setDataTenant(tenant);
-        if (props.service.data.length > 0) {
-            props.service.data.map((val: iService, key: number) => {
-                 console.log(key)
-                service.push({value:val.id,label:val.title})
-            })
-            handleChangeService({ value: props.service.data[0].id, label: props.service.data[0].title })
-        }
-        setDataService(service);
-        
-        
+
+    const handleGetTenant = async () => {
+        let url: string = `management/tenant?page=1&perpage=50`
+        await handleGet(Api.apiClient + url, (data:any) => {
+            let tenant: any = [];
+            if (data.data.length > 0) {
+                data.data.map((val: iTenant, key: number) => {
+                    console.log(key)
+                    tenant.push({value:val.id,label:val.title})
+                })
+                handleChangeTenant({ value: data.data[0].id, label: data.data[0].title })
+            }
+            setDataTenant(tenant);
+        },false)
+    }
+
+    const getService = async () => {
+        await getServiceOption('1', (res) => {
+            handleChangeService({ value: res[0].value, label: res[0].label })
+            setDataService(res);
+        })
+    }
+
+    
+
+    useEffect(() => {
+        handleGetTenant();
+        getService();
     }, [])
 
   
@@ -92,7 +97,7 @@ const FormBilling: React.FC = (props: any) => {
         };
         await handlePost(url, parseData, (datum, msg) => {
             console.log(datum)
-            helper.mySwalWithCallback(msg, () => history.back())
+            swalWithCallback(msg, () => history.back())
         });
     }
 
@@ -141,10 +146,14 @@ const FormBilling: React.FC = (props: any) => {
                                 Tenant  <span className="text-red-600">*</span>
                             </label>
                             <div className="flex flex-col w-3/4">
-                                <Select
+                                    <Select
+                                    className="text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-none dark:text-gray-300"
                                     name="tenant"
                                     options={dataTenant}
                                     onChange={handleChangeTenant}
+                                    getProp={(key:any) => {
+                                        console.log('ce',key)
+                                    }}
                                     value={
                                         dataTenant.find((op:iSelect) => {
                                             return op.value === idTenant
@@ -219,32 +228,11 @@ export async function getServerSideProps(ctx: NextPageContext) {
    
     if(!cookies._nbilling){
         return {redirect: {destination: '/auth/login',permanent: false}}
-    }else{
-        Api.axios.defaults.headers.common["Authorization"] = helper.decode(cookies._nbilling);
+    } else {
+        Api.axios.defaults.headers.common["Authorization"] = decode(cookies._nbilling);
     }
-    
-    let tenant: any = [];
-    let service: any = [];
-    try {
-      const getData = await Api.get(Api.apiUrl +`management/tenant?page=1&perpage=50`);
-        if(getData.status===200){
-            tenant = getData.data.result;
-        }else{
-            tenant=[];
-        }
-    } catch (err) { }
-    try {
-      const getData = await Api.get(Api.apiUrl +`management/service?page=1&perpage=50&type=1`);
-        if(getData.status===200){
-            service = getData.data.result;
-        }else{
-            service=[];
-        }
-    } catch (err) { }
-    // console.log('tenant', tenant)
-    // console.log('service', service)
     return { 
-        props:{tenant,service}
+        props:{}
     }
 }
 export default FormBilling;

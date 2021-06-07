@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Layout from 'Layouts'
-import Helper from 'lib/helper';
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import { } from '@windmill/react-ui'
@@ -10,11 +9,12 @@ import { handleDelete, handleGet } from "lib/handleAction";
 import { iPagin, iTenant } from "lib/interface";
 import PaginationQ from "helpers/pagination";
 import TablePage from "components/Common/tablePage";
-import { btnDelete, btnEdit, status, td } from "helpers/general";
+import { btnDelete, btnEdit, decode, status, td } from "helpers/general";
 import { Drawer} from 'antd';
 import { isMobileOnly,isTablet } from 'react-device-detect';
 import { MdClose } from "react-icons/md";
 import parse from 'html-react-parser';
+
 import 'antd/dist/antd.css';
 
 const tempDetail = (title:string, desc:any) => {
@@ -34,7 +34,7 @@ const titleHeader = (title: string) => {
 
 
 
-const IndexTenant: React.FC = (datum: any) => {
+const IndexTenant: React.FC = () => {
     const limit = 0;
     const router = useRouter()
     const [data,setData]= useState<Array<iTenant>>([]);
@@ -42,7 +42,8 @@ const IndexTenant: React.FC = (datum: any) => {
     const [search, setSearch] = useState('');
     const [numPagin, setNumPagin] = useState(1);
     const [visible,setVisible]= useState<boolean>(false);
-    const [idx,setIdx]= useState<number>(limit);
+    const [idx, setIdx] = useState<number>(limit);
+    
     
     const handleGets = async () => {
         let url: string = `management/tenant?page=${numPagin}`
@@ -54,29 +55,22 @@ const IndexTenant: React.FC = (datum: any) => {
     }
    
     useEffect(() => {
-        if (search !== ''||numPagin>1) {
-             handleGets()
-         }
-         else {
-            setSearch('')
-            setData(datum.datum.data);
-            setPagin(datum.datum);
-         }
+        handleGets()
     }, [search, numPagin])
-    console.log(isMobileOnly)
+   
     const onCloseDrawer = () => {
         setVisible(false)
         setIdx(limit);
     }
     const dataHeader=[
-                    {title:'Tenant',colSpan:1,rowSpan:2},
-                    {title:'Service',colSpan:1,rowSpan:2},
-                    {title:'Server name',colSpan:1,rowSpan:2},
-                    {title:'Monthly billing',colSpan:1,rowSpan:2},
-                    {title:'Billing active',colSpan:1,rowSpan:2},
-                    {title:'Storage',colSpan:2,rowSpan:1,className:"text-center"},
-                    {title:'#',colSpan:1,rowSpan:2,className:"text-center"},
-                ]
+        {title:'Tenant',colSpan:1,rowSpan:2},
+        {title:'Service',colSpan:1,rowSpan:2},
+        {title:'Server name',colSpan:1,rowSpan:2},
+        {title:'Monthly billing',colSpan:1,rowSpan:2},
+        {title:'Billing active',colSpan:1,rowSpan:2},
+        {title:'Storage',colSpan:2,rowSpan:1,className:"text-center"},
+        {title:'#',colSpan:1,rowSpan:2,className:"text-center"},
+    ]
     return (
         <Layout title="Tenant">
             <TablePage
@@ -173,24 +167,17 @@ const IndexTenant: React.FC = (datum: any) => {
         </Layout>
     );
 }
+
 export async function getServerSideProps(ctx:NextPageContext) {
     const cookies = nookies.get(ctx)
     if(!cookies._nbilling){
         return {redirect: {destination: '/auth/login',permanent: false}}
     }else{
-        Api.axios.defaults.headers.common["Authorization"] = Helper.decode(cookies._nbilling);
+        Api.axios.defaults.headers.common["Authorization"] = decode(cookies._nbilling);
     }
-    let datum: any = [];
-    try {
-      const getData = await Api.get(Api.apiUrl +`management/tenant?page=1`);
-        if(getData.status===200){
-            datum = getData.data.result;
-        }else{
-            datum=[];
-        }
-    } catch (err) {}
+    
     return { 
-        props:{datum}
+        props:{}
     }
 }
 

@@ -11,9 +11,8 @@ import { handlePost } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import nookies from 'nookies'
-import helper from "lib/helper";
 import moment from 'moment';
-import { btnSave, dateAndTime, rmDot, status, toCurrency } from "helpers/general";
+import { btnSave, dateAndTime, decode, rmDot, status, swalWithCallback, toCurrency } from "helpers/general";
 import 'antd/dist/antd.css';
 type InitialForm = {
     id_billing: string;
@@ -64,7 +63,7 @@ const DetailBilling: React.FC = () => {
         };
         await handlePost(url, parseData, (datum, msg) => {
             console.log(datum);
-            helper.mySwalWithCallback(msg, () => history.back())
+            swalWithCallback(msg, () => history.back())
         });
     }
 
@@ -110,7 +109,7 @@ const DetailBilling: React.FC = () => {
                             <label className="font-medium text-gray-200 w-1/4">
                                 Update Billing
                             </label>
-                                <Switch className="font-sans" onChange={(e) => {
+                                <Switch onChange={(e) => {
                                     setIsChange(e)
                                 }} defaultChecked={isChange} style={{ border: '1px solid white' }} />
                         </div>
@@ -251,14 +250,11 @@ export async function getServerSideProps(ctx: NextPageContext) {
     if(!cookies._nbilling){
         return {redirect: {destination: '/auth/login',permanent: false}}
     }else{
-        Api.axios.defaults.headers.common["Authorization"] = helper.decode(cookies._nbilling);
+        Api.axios.defaults.headers.common["Authorization"] = decode(cookies._nbilling);
     }
     
-    let datum: any = [];
-    let edit: any = [];
-    
     return { 
-        props:{datum,edit}
+        props:{}
     }
 }
 export default DetailBilling;

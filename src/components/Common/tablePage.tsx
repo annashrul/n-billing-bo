@@ -18,31 +18,29 @@ const TablePage = (props: Props) => {
 
     return (
         <div className="container grid  lg:px-6 mx-auto">
-            <div className="flex justify-between">
-                <div>
-                    <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">
+            <div className="mt-6 pt-3">
+                    <h2 className="text-2xl inline-block align-middle font-semibold text-gray-700 dark:text-gray-200">
                         {page}
                     </h2>
                 </div>
-            </div>
             <br />
             {
                 props.renderHeader
             }
             <div className="w-full overflow-hidden rounded-lg shadow-xs">
-                <div className="shadow-md rounded my-6">
+                <div className="shadow-md rounded">
                     <HeaderPage
                         onChange={props.onChange}
                         pathForm={page}
                     />
                     <div className="w-full overflow-hidden rounded-lg shadow-xs mb-8">
                         <div className="w-full text-left overflow-x-auto">
-                            <table className="w-full whitespace-no-wrap">
-                                    <thead className="w-full border-b border-gray-boder whitespace-no-wrap">
+                            <table className="w-full">
+                                    <thead className="w-full">
                                     <tr>
                                         {
                                             props.dataHeader.map((val: any, key: number) => {
-                                                return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className={`py-3 px-6 text-white font-normal whitespace-no-wrap ${val.className}`} rowSpan={val.rowSpan} colSpan={val.colSpan}>{val.title}</th>
+                                                return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className={`font-semibold  py-3 px-6 text-gray-700 dark:text-gray-200 whitespace-no-wrap ${val.className}`} rowSpan={val.rowSpan} colSpan={val.colSpan}>{val.title}</th>
                                             })
                                         }
                                     </tr>
@@ -50,7 +48,7 @@ const TablePage = (props: Props) => {
                                         props.dataColspan !== undefined && <tr>
                                             {
                                                 props.dataColspan.map((val: any, key: number) => {
-                                                    return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className="py-3 px-6 text-white font-normal text-center whitespace-no-wrap">{val}</th>
+                                                    return <th key={key} style={{border:"1px solid rgba(26, 28, 35, 1)"}} className="font-semibold  py-3 px-6 text-gray-700 dark:text-gray-200 text-center whitespace-no-wrap">{val}</th>
                                                 })
                                             }
                                         </tr>

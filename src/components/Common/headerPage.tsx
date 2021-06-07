@@ -15,12 +15,12 @@ const HeaderPage = (props: Props) => {
             <div className="flex relative w-72">
                 <input 
                     type="search"
-                    className="dark:border-gray-600 dark:bg-gray-700 focus:outline-none dark:text-gray-300 w-full rounded px-3 py-2.5" 
+                    className="font-normal dark:border-gray-600 dark:bg-gray-700 focus:outline-none dark:text-gray-300 w-full rounded px-3 py-2.5" 
                     placeholder="Search"
                     onChange={props.onChange}/>
             </div>
             <div className="flex items-center ">
-                <button className="rounded text-white bg-yellow-400 font-medium bg-orange1-main hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:`/${props.pathForm}/form`,query: { keyword: 'add' }},`${props.pathForm}/add`)}>Add {props.pathForm}</button>
+                <button className="rounded text-white bg-yellow-400 font-medium hover:bg-yellow-400 px-3 py-2.5" onClick={() => router.push({pathname:`/${props.pathForm}/form`,query: { keyword: 'add' }},`${props.pathForm}/add`)}>Add {props.pathForm}</button>
             </div>
         </div>
     );

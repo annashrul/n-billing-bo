@@ -4,7 +4,7 @@ import { NextPageContext } from 'next'
 import nookies from 'nookies'
 
 import Api from 'lib/httpService';
-import Helper from 'lib/helper';
+import { decode } from 'helpers/general';
 
 
 const Dashboard: React.FC = () => {
@@ -34,7 +34,7 @@ export async function getServerSideProps(ctx:NextPageContext) {
       },
     }
   }else{
-    Api.axios.defaults.headers.common["Authorization"] = Helper.decode(cookies._nbilling);
+    Api.axios.defaults.headers.common["Authorization"] = decode(cookies._nbilling);
   }
 
   return { props:{

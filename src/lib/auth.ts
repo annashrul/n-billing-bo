@@ -2,23 +2,21 @@
 import http from "./httpService";
 import Cookies from "js-cookie";
 import {iUser} from './interface'
-import Helper from "./helper";
-
+import { removeCookie, setCookie } from "helpers/general";
 // http.setJwt (getJwt());
 
 
 function setUser(datum: iUser) {
-  Cookies.set('__uid', btoa(JSON.stringify(datum)), { expires: 7 });
+  setCookie('_uid',JSON.stringify(datum))
 }
 
 function setToken(datum: string) {
-  Cookies.set('_nbilling', btoa(datum), { expires: 7 });
-
+    setCookie('_nbilling',datum)
 }
 export function doLogout() {
-  Helper.removeCookie('__uid');
-  Helper.removeCookie('_nbilling');
-  Helper.removeCookie('_regist');
+  removeCookie('__uid');
+  removeCookie('_nbilling');
+  removeCookie('_regist');
   http.axios.defaults.headers.common["Authorization"] = '';
 
 }

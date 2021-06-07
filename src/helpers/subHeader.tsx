@@ -10,7 +10,7 @@ type Props = {
 
 const SubHeader: React.FC<Props> = (props) => {
     return (
-        <nav aria-label="breadcrumb " className="pt-3 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400 w-full">
+        <nav aria-label="breadcrumb " className="border-l-4 border-yellow-400 pt-3 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400 w-full">
             <ol className="breadcrumb">
               <li className="breadcrumb-item justify-between w-full flex flex-row">
                 {

@@ -7,16 +7,15 @@ import SubHeader from "helpers/subHeader";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Radio} from 'antd';
-import { handlePost, handlePut } from "lib/handleAction";
+import { handleGet, handlePost, handlePut } from "lib/handleAction";
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
-import { iService } from "lib/interface";
 import nookies from 'nookies'
-import helper from "lib/helper";
 import Select from 'react-select';
-import { btnSave, rmDot, toCurrency } from "helpers/general";
+import { btnSave, decode, rmDot, swalWithCallback, toCurrency } from "helpers/general";
 import CKEditor from 'ckeditor4-react';
 import 'antd/dist/antd.css';
+import { getServiceOption } from "helpers/reusableService";
 
 
 
@@ -42,13 +41,14 @@ type InitialForm = {
 }
 
 
-const FormTenant: React.FC = (datum:any) => {
+const FormTenant: React.FC = () => {
     const history = useRouter();
+    const queryString = history.query.keyword;
     const [monthlyBilling, setMonthlyBilling] = useState('1');
     const [note, setNote] = useState('');
     const [idService, setIdService] = useState('');
     const [idServiceBilling, setIdServiceBilling] = useState('');
-    const [service,setService]= useState([]);
+    const [serviceTenant,setServiceTenant]= useState([]);
     const [serviceBilling,setServiceBilling]= useState([]);
     const [isService, setIsService] = useState(true);
 
@@ -75,6 +75,65 @@ const FormTenant: React.FC = (datum:any) => {
 		criteriaMode: "all",
 		mode: "all"
     });
+   
+    const getService = async (type:string) => {
+        await getServiceOption(type, (res) => {
+            type==='1'?setServiceBilling(res):setServiceTenant(res);
+            type==='1'?handleChangeServiceBilling({value: res[0].value, label: res[0].label}):handleChangeServiceTenant({value: res[0].value, label: res[0].label})
+        })
+    }
+    const getEdit = async () => {
+        await handleGet(Api.apiClient + `management/tenant/${queryString}`, (data) => {
+            setValue('title',data.title)
+            setValue('server_name',data.server_name)
+            setValue('databases',data.databases)
+            setValue('backoffice',data.backoffice)
+            setValue('api',data.api)
+            setValue('frontend',data.frontend)
+            setValue('email',data.email)
+            setValue('telp',data.telp)
+            setValue('address',data.address)
+            setValue('responsible', data.responsible)
+            setMonthlyBilling(`${data.monthly_billing}`);
+            handleChangeServiceTenant({ value: data.id_service, label: data.service })
+            setNote(data.note)
+        },false)
+    }
+   
+
+    
+
+    useEffect(() => {
+        if (queryString !== 'add') {
+            getEdit();
+        }
+    }, [isService&&idService])
+
+    useEffect(() => {
+         if (monthlyBilling === '0') {
+            setValue('period', '');
+            setValue('due_date', '');
+            setValue('amount', '');
+        }
+    }, [monthlyBilling])
+
+    useEffect(() => {
+        getService('0');
+        if (queryString === 'add') {
+            getService('1');
+        }
+    }, [])
+    
+    
+    
+    const handleChangeServiceTenant = (val: any) => {
+        setIdService(val.value)
+    }
+    const handleChangeServiceBilling = (val: any) => {
+        setIdServiceBilling(val.value)
+    }
+    
+
     const onSubmit: SubmitHandler<InitialForm> = async (data:any) => {
         let url = Api.apiClient + `management/tenant`;
         let parseData = {
@@ -92,98 +151,37 @@ const FormTenant: React.FC = (datum:any) => {
             note: note,
             responsible: data.responsible,
             billing: {
-                period: monthlyBilling==="1"&&history.query.keyword==='add'?data.period:'',
-                due_date: monthlyBilling==="1"&&history.query.keyword==='add'?data.due_date:'',
-                amount:  monthlyBilling==="1"&&history.query.keyword==='add'?rmDot(data.amount):'', 
+                period: monthlyBilling==="1"&&queryString==='add'?data.period:'',
+                due_date: monthlyBilling==="1"&&queryString==='add'?data.due_date:'',
+                amount:  monthlyBilling==="1"&&queryString==='add'?rmDot(data.amount):'', 
                 service: idServiceBilling, 
             }
         }
 
-        // console.log(parseData);
         
-        
-        if (history.query.keyword === 'add') {
-            await handlePost(url, parseData, (datum, msg) => {
-                console.log(datum)
-                helper.mySwalWithCallback(msg, () => history.back())
+        if (queryString === 'add') {
+            await handlePost(url, parseData, (res, msg) => {
+                console.log(res)
+                swalWithCallback(msg, () => history.back())
             });
         }
         else {
-            await handlePut(url + '/' + history.query.keyword, parseData, (datum, msg) => {
-                console.log(datum)
-                helper.mySwalWithCallback(msg, () => history.back())
+            await handlePut(url + '/' + queryString, parseData, (res, msg) => {
+                console.log(res)
+                swalWithCallback(msg, () => history.back())
             })
         }
         
     }
 
-    useEffect(() => {
-        if (datum.edit.id !== undefined) {
-            let data = datum.edit;
-            setValue('title',data.title)
-            setValue('server_name',data.server_name)
-            setValue('databases',data.databases)
-            setValue('backoffice',data.backoffice)
-            setValue('api',data.api)
-            setValue('frontend',data.frontend)
-            setValue('email',data.email)
-            setValue('telp',data.telp)
-            setValue('address',data.address)
-            setValue('responsible', data.responsible)
-            setMonthlyBilling(`${data.monthly_billing}`);
-            handleChangeService({ value: data.id_service, label: data.service })
-            setNote(data.note)
-            
-        }
-    }, [isService&&idService])
-
-    useEffect(() => {
-         if (monthlyBilling === '0') {
-            setValue('period', '');
-            setValue('due_date', '');
-            setValue('amount', '');
-        }
-    }, [monthlyBilling])
-
-    useEffect(() => {
-        let dataServiceTenant:any = [];
-        let dataServiceBilling:any = [];
-        datum.datum.data.map((val: iService, key: number) => {
-            console.log(key)
-            dataServiceTenant.push({ value: val.id, label: val.title });
-        })
-        setService(dataServiceTenant);
-        handleChangeService({value: dataServiceTenant[0].value, label: dataServiceTenant[0].label})
-       
-        if (history.query.keyword === 'add') {
-            datum.serviceBilling.data.map((val: iService, key: number) => {
-                console.log(key)
-                dataServiceBilling.push({ value: val.id, label: val.title });
-            })
-            setServiceBilling(dataServiceBilling);
-            handleChangeServiceBilling({value: dataServiceBilling[0].value, label: dataServiceBilling[0].label})
-       }
-    }, [])
-    
-    
-    
-    const handleChangeService = (val: any) => {
-        setIdService(val.value)
-    }
-    const handleChangeServiceBilling = (val: any) => {
-        setIdServiceBilling(val.value)
-    }
-    
-
-   
    
     return (
-        <Layout title={`Form ${history.query.keyword==='add'?'Add':'Edit'} Tenant` }>
+        <Layout title={`Form ${queryString==='add'?'Add':'Edit'} tenant` }>
             
             <div className="container grid  lg:px-6 py-5 mx-auto">
                 <div className="flex justify-between">
                     <SubHeader
-                        title={`Tenant / ${history.query.keyword==='add'?'Add':'Edit'} Tenant`}
+                        title={`Tenant / ${queryString==='add'?'Add':'Edit'} tenant`}
                         link
                         onClick={() => history.push('/tenant')}
                     />
@@ -273,11 +271,11 @@ const FormTenant: React.FC = (datum:any) => {
                         <div className="flex flex-col w-3/4">
                             <Select
                                 name="service"
-                                options={service}
+                                options={serviceTenant}
                                 onMenuOpen={()=>setIsService(false)}
-                                onChange={handleChangeService}
+                                onChange={handleChangeServiceTenant}
                                 value={
-                                    service.find((op:any) => {
+                                    serviceTenant.find((op:any) => {
                                         return op.value === idService
                                     })
                                 }
@@ -335,7 +333,7 @@ const FormTenant: React.FC = (datum:any) => {
                             </Radio.Group>
                         </div>
                     </div>
-                    {monthlyBilling==='1'&&history.query.keyword==='add'&&(<div className="flex flex-row w-full mb-9">
+                    {monthlyBilling==='1'&&queryString==='add'&&(<div className="flex flex-row w-full mb-9">
                         <label className=" font-medium text-gray-200 w-1/4">
                            Periode  <span className="text-red-600">*</span>
                         </label>
@@ -351,7 +349,7 @@ const FormTenant: React.FC = (datum:any) => {
                         <span className="text-red-700">{errors.period?.message}</span>
                                 </div>
                     </div>)}
-                    {monthlyBilling==='1'&&history.query.keyword==='add'&&(<div className="flex flex-row w-full mb-9">
+                    {monthlyBilling==='1'&&queryString==='add'&&(<div className="flex flex-row w-full mb-9">
                         <label className=" font-medium text-gray-200 w-1/4">
                            Due Date  <span className="text-red-600">*</span>
                         </label>
@@ -361,7 +359,7 @@ const FormTenant: React.FC = (datum:any) => {
 
                                 </div>
                     </div>)}
-                    {monthlyBilling==='1'&&history.query.keyword==='add'&&(<div className="flex flex-row w-full mb-9">
+                    {monthlyBilling==='1'&&queryString==='add'&&(<div className="flex flex-row w-full mb-9">
                 <label className=" font-medium text-gray-200 w-1/4">
                     Amount  <span className="text-red-600">*</span>
                 </label>
@@ -371,8 +369,7 @@ const FormTenant: React.FC = (datum:any) => {
 
                                 </div>
                 </div>)}
-                    {monthlyBilling === '1' && history.query.keyword === 'add' && (<div className="flex flex-row w-full mb-9">
-                                
+                    {monthlyBilling==='1'&&queryString==='add'&&(<div className="flex flex-row w-full mb-9">
                         <label className=" font-medium text-gray-200 w-1/4">
                            Service  <span className="text-red-600">*</span>
                         </label>
@@ -409,49 +406,13 @@ const FormTenant: React.FC = (datum:any) => {
 }
 export async function getServerSideProps(ctx: NextPageContext) {
     const cookies = nookies.get(ctx)
-   
     if(!cookies._nbilling){
         return {redirect: {destination: '/auth/login',permanent: false}}
     }else{
-        Api.axios.defaults.headers.common["Authorization"] = helper.decode(cookies._nbilling);
+        Api.axios.defaults.headers.common["Authorization"] = decode(cookies._nbilling);
     }
-    
-    let datum: any = [];
-    let edit: any = [];
-    let serviceBilling: any = [];
-    if (ctx.query.keyword !== 'add') {
-        try {
-            const getData = await Api.get(Api.apiUrl + `management/tenant/${ctx.query.keyword}`);
-            if (getData.status === 200) {
-                edit = getData.data.result;
-            }else{
-                edit=[];
-            }
-        } catch (err) { }
-        
-       
-    }
-    else {
-        try {
-            const getData = await Api.get(Api.apiUrl + `management/service?page=${1}&type=1&perpage=50`);
-            if (getData.status === 200) {
-                serviceBilling = getData.data.result;
-            }else{
-                serviceBilling=[];
-            }
-        } catch (err) {}
-    }
-    try {
-        const getData = await Api.get(Api.apiUrl + `management/service?page=${1}&type=0&perpage=50`);
-        if (getData.status === 200) {
-            datum = getData.data.result;
-        }else{
-            datum=[];
-        }
-    } catch (err) { }
-     
     return { 
-        props:{datum,edit,serviceBilling}
+        props:{}
     }
 }
 export default FormTenant;

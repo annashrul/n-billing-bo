@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Layout from 'Layouts'
-import Helper from 'lib/helper';
 import Api from 'lib/httpService';
 import { NextPageContext } from 'next'
 import { } from '@windmill/react-ui'
@@ -10,7 +9,7 @@ import { handleDelete, handleGet } from "lib/handleAction";
 import { iPagin, iService} from "lib/interface";
 import PaginationQ from "helpers/pagination";
 import TablePage from "components/Common/tablePage";
-import { btnDelete, btnEdit, td } from "helpers/general";
+import { btnDelete, btnEdit, decode, td } from "helpers/general";
 
 
 
@@ -47,18 +46,14 @@ const IndexService: React.FC = () => {
         <Layout title="Service">
             <TablePage
                 renderHeader={
-                    <div className="flex py-4 cursor-pointer">
-                        <div style={{borderBottom:category==="0"?"4px solid orange":"none"}} onClick = {() => {
-                            setCategory("0")
-                        }}>	
-                            <h1 className=" text-gray-700 dark:text-gray-400 font-bold text-center">
+                    <div className="flex mb-3 cursor-pointer">
+                        <div className={category==='0'?`border-b-4 border-yellow-400`:''} onClick = {() => setCategory("0")}>	
+                            <h1 className="text-gray-700 dark:text-gray-400 font-bold text-center">
                                 Tenant
                             </h1>
                         </div>
-                        <div className="ml-8" style={{borderBottom:category==="1"?"4px solid orange":"none"}} onClick = {() => {
-                            setCategory("1")
-                        }}>
-                            <h1 className=" text-gray-700 dark:text-gray-400 font-bold text-center">
+                        <div className={`ml-8 ${category==='1'?`border-b-4 border-yellow-400`:''}`} onClick = {() => setCategory("1")}>
+                            <h1 className="text-gray-700 dark:text-gray-400 font-bold text-center">
                                 Billing
                             </h1>
                         </div>
@@ -106,13 +101,11 @@ export async function getServerSideProps(ctx:NextPageContext) {
     if(!cookies._nbilling){
         return {redirect: {destination: '/auth/login',permanent: false}}
     }else{
-        Api.axios.defaults.headers.common["Authorization"] = Helper.decode(cookies._nbilling);
+        Api.axios.defaults.headers.common["Authorization"] = decode(cookies._nbilling);
     }
    
     return { 
-        props: {
-            datum:[]
-        }
+        props: {}
     }
 }
 

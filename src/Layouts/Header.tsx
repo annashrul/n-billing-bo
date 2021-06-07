@@ -26,7 +26,6 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar,openProfile,toggleProfile}
     doLogout();
     router.push('/auth/login')
   }
-  console.log('isDevice',isMobileOnly)
   return (
     <header className={`z-10 bg-white shadow-md dark:bg-gray-800 ${!isMobileOnly&&'pt-4'}`}>
       <div className="container flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">

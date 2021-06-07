@@ -2,7 +2,7 @@
 
 *{
         font-family: 'Poppins', sans-serif;
-
+letter-spacing: 0.025em;
 }
 .intl-tel-input .flag-container .arrow {
     /*border:
@@ -83,25 +83,31 @@
         }
 input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer!important;
-  border-radius: 4px!important;
-  margin-right: 2px!important;
   opacity: 0.6!important;
   filter: invert(0.8)!important;
 }
+input.form-input{
+    border-radius: 4px!important;
+}
+.css-1okebmr-indicatorSeparator{
+    background-color:transparent!important;
 
-
+}
+.css-tlfecz-indicatorContainer{
+    padding-right:10px!important;
+}
  .css-1pahdxg-control {
-            box-shadow: 0 0 0 1px #343a40!important;
-            border-color: #343a40!important;
+            box-shadow: 0 0 0 1px rgba(36, 38, 45,1)!important;
+            border-color: rgba(36, 38, 45,1)!important;
             /* border-radius: 50px!important; */
             border-style: solid;
             border-width: 1px;
-            background-color: #343a40!important;
+            background-color: rgba(36, 38, 45,1)!important;
         }
         
         .css-26l3qy-menu {
             top: 100%;
-            background-color: #343a40!important;
+            background-color: rgba(36, 38, 45,1)!important;
             border-radius: 4px!important;
             box-shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1);
             margin-bottom: 0px;
@@ -141,7 +147,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         }
         
         .css-yt9ioa-option {
-            background-color: #343a40!important;
+            background-color: rgba(36, 38, 45,1)!important;
             color: #fff!important;
             cursor: default;
             display: block;
@@ -204,8 +210,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             -webkit-box-align: center;
             -ms-flex-align: center;
             align-items: center;
-            background-color: #343a40!important;
-            border-color: #343a40!important;
+            background-color: rgba(36, 38, 45, 1)!important;
+            border-color: rgba(36, 38, 45, 1)!important;
             /* border-radius: 50px!important; */
             border-style: solid;
             border-width: 1px;
@@ -252,3 +258,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background: #D4AF37!important;
     border:1px solid #D4AF37!important;
 }
+#nprogress .bar {
+  background: #D4AF37 !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #D4AF37, 0 0 5px #D4AF37;
+}
+
+#nprogress .spinner .spinner-icon {
+  border-top-color: #D4AF37;
+  border-left-color: #D4AF37;
+}
+
+
