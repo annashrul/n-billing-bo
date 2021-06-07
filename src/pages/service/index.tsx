@@ -48,17 +48,17 @@ const IndexService: React.FC = () => {
             <TablePage
                 renderHeader={
                     <div className="flex py-4 cursor-pointer">
-                        <div style={{borderBottom:category==="0"?"1px solid white":"none"}} onClick = {() => {
+                        <div style={{borderBottom:category==="0"?"4px solid orange":"none"}} onClick = {() => {
                             setCategory("0")
                         }}>	
-                            <h1 className=" text-white font-bold text-center">
+                            <h1 className=" text-gray-700 dark:text-gray-400 font-bold text-center">
                                 Tenant
                             </h1>
                         </div>
-                        <div className="ml-8" style={{borderBottom:category==="1"?"1px solid white":"none"}} onClick = {() => {
+                        <div className="ml-8" style={{borderBottom:category==="1"?"4px solid orange":"none"}} onClick = {() => {
                             setCategory("1")
                         }}>
-                            <h1 className=" text-white font-bold text-center">
+                            <h1 className=" text-gray-700 dark:text-gray-400 font-bold text-center">
                                 Billing
                             </h1>
                         </div>

@@ -143,7 +143,7 @@ const IndexTenant: React.FC = (datum: any) => {
             <table className="w-full relative text-left whitespace-no-wrap">
                 <thead className="w-full ">
                     {tempDetail('responsible', data[idx].responsible)}
-                    {tempDetail('Phone number', <a target="_blank" href={`https://wa.me/${'+6281223165037'}/?text=urlencodedtext`}>{data[idx].telp}</a>)}
+                    {tempDetail('Phone number', data[idx].telp)}
                     {tempDetail('Email', data[idx].email)}
                     {tempDetail('Address', data[idx].address)}
                 </thead>

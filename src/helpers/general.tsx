@@ -20,8 +20,8 @@ export const dateAndTime = (val:any) => {
     return moment(val).format('LLL');
 }
 
-export const btnSave = (disable:boolean,classname:string) => {
-    return <button disabled={disable} className={`rounded text-white font-sans font-medium ${disable && 'bg-gray-400 cursor-not-allowed' || 'bg-yellow-400'}  px-3 py-2.5 ${classname}`}>Save</button>
+export const btnSave = (disable:boolean,classname:string,title:string='Save') => {
+    return <button disabled={disable} className={`rounded text-white font-sans font-medium ${disable && 'bg-gray-400 cursor-not-allowed' || 'bg-yellow-400'}  px-3 py-2.5 ${classname}`}>{title}</button>
 
 }
 

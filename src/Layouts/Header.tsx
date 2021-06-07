@@ -1,7 +1,7 @@
 import React from 'react';
 import {doLogout} from 'lib/auth'
 import {useRouter} from 'next/router'
-import Link from 'next/link'
+
 import { useEffect } from 'react';
 import { isMobileOnly } from 'react-device-detect';
 

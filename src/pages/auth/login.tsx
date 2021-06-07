@@ -7,6 +7,7 @@ import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { useForm,SubmitHandler } from 'react-hook-form';
 import {useRouter} from 'next/router'
+import { btnSave } from 'helpers/general';
 
 interface iLogin {
   apiUrl: string;
@@ -79,9 +80,12 @@ const Login: NextPage<iLogin> = () => {
                   {errors.password && errors.password.message}
                 </small>
               </label>
-              <button className="block w-full px-4 py-2 mt-7 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-gradient-to-r from-old-gold-400 via-old-gold-500 to-old-gold-600 border border-transparent rounded-lg active:bg-old-gold-500 hover:bg-old-gold-600 outline-none focus:shadow-outline-old-gold dark:text-gray-200 ">
-                {!loading ? <p className="text-white font-sans font-medium">Masuk</p>: 'loading ...'}
-              </button>
+              {
+                btnSave(false,'block w-full mt-7',!loading ? "Login": 'loading ...')
+              }
+              {/* <button className="block w-full px-4 py-2 mt-7 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-gradient-to-r from-old-gold-400 via-old-gold-500 to-old-gold-600 border border-transparent rounded-lg active:bg-old-gold-500 hover:bg-old-gold-600 outline-none focus:shadow-outline-old-gold dark:text-gray-200 "> */}
+                
+              {/* </button> */}
             </div>
           </form>
         </div>

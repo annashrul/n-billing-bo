@@ -5,7 +5,7 @@ type Props = {
     totalPage?: number;
     totalDate?: number;
     page?: number;
-    count?: number;
+    count?: number|undefined;
     step?: number;
 	onNext?: () => void;
 	onPrev?: () => void;

@@ -176,13 +176,7 @@ const FormTenant: React.FC = (datum:any) => {
     
 
    
-    const onChange = (event: any) => {
-       var content = CKEditor.instances['editor1'].getData();
-
-
-    //    console.log(content);
-    //    setNote(event.target.value);
-  };
+   
     return (
         <Layout title={`Form ${history.query.keyword==='add'?'Add':'Edit'} Tenant` }>
             
